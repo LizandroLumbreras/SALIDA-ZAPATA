@@ -39,6 +39,34 @@
     .boton-accion:hover {
       opacity: 0.9;
     }
+    .producto span {
+  cursor: pointer;
+  flex: 1;
+  transition: background 0.2s, color 0.2s;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.producto span:hover {
+  background: #e0f7fa;
+  color: #007b8a;
+}
+    #popupCantidad input {
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#popupCantidad button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#popupCantidad button:hover {
+  opacity: 0.9;
+}
   </style>
 </head>
 <body>
@@ -79,6 +107,29 @@
 </div>
 
 <script>
+  let productoSeleccionado = null;
+
+function agregarCantidad(nombre, codigo) {
+  productoSeleccionado = { nombre, codigo };
+  document.getElementById("nombreProductoSeleccionado").textContent = nombre;
+  document.getElementById("inputCantidad").value = "";
+  document.getElementById("popupCantidad").style.display = "block";
+}
+
+function confirmarCantidad() {
+  const cantidad = parseInt(document.getElementById("inputCantidad").value);
+  if (!isNaN(cantidad) && cantidad > 0) {
+    listaTemporal.push({ ...productoSeleccionado, cantidad });
+    actualizarListaTemporal();
+    cerrarPopup();
+  } else {
+    alert("Ingresa una cantidad válida.");
+  }
+}
+
+function cerrarPopup() {
+  document.getElementById("popupCantidad").style.display = "none";
+}
   function mostrarProductos(tipo) {
   let productos = [];
   let titulo = "Productos";
@@ -252,7 +303,16 @@ function finalizarCaptura() {
   console.log("Lista final:", listaTemporal);
 }
 </script>
-
+<!-- CUADRO FLOTANTE DE CANTIDAD -->
+<div id="popupCantidad" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+background:white; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:999;">
+  <h3>Agregar cantidad</h3>
+  <p id="nombreProductoSeleccionado"></p>
+  <input type="number" id="inputCantidad" placeholder="Cantidad" style="width:100%; padding:10px; margin:10px 0;">
+  <div style="text-align:right;">
+    <button onclick="cerrarPopup()" style="margin-right:10px;">Cancelar</button>
+    <button onclick="confirmarCantidad()">Agregar</button>
+  </div>
 </body>
 </html>
 
