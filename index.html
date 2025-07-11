@@ -59,11 +59,16 @@
 
 <div id="pantalla3" class="pantalla">
   <h2>Categoría REYMA</h2>
-  <div class="tarjeta" onclick="irAPantalla('pantalla4')">CHAROLA</div>
+  <div class="tarjeta" onclick="mostrarProductos('CHAROLA')">CHAROLA</div>
+<div class="tarjeta" onclick="mostrarProductos('CONTENEDOR')">CONTENEDOR</div>
+<div class="tarjeta" onclick="mostrarProductos('PLATOS_TERMICOS')">PLATOS TERMICOS</div>
+<div class="tarjeta" onclick="mostrarProductos('CHAROLAS_COLORES')">CHAROLAS COLORES</div>
+<div class="tarjeta" onclick="mostrarProductos('CONTENEDORES_NEGROS')">CONTENEDORES NEGROS</div>
+<div class="tarjeta" onclick="mostrarProductos('VASOS_PLASTICO')">VASOS PLASTICOS</div>
 </div>
 
 <div id="pantalla4" class="pantalla">
-  <h2>Productos REYMA - CHAROLA</h2>
+ <h2 id="tituloProductos">Productos</h2>
   <div id="listaProductos"></div>
   <h3>🧾 Lista temporal:</h3>
   <ul id="listaTemporal"></ul>
