@@ -393,7 +393,7 @@ buscador.addEventListener("input", () => {
     const matchCodigo = producto.id.includes(texto);
     if (matchTexto || matchCodigo) {
       const div = document.createElement("div");
-      div.textContent = ${producto.concepto};
+     div.textContent = producto.concepto;
       div.onclick = () => seleccionarProducto(producto);
       resultados.appendChild(div);
     }
@@ -703,7 +703,7 @@ if (!coincidencias.empty) {
     lista.innerHTML = "";
     productosTemporal.forEach(p => {
       const li = document.createElement("li");
-      li.textContent = ${p.cantidad} x ${p.descripcion};
+      li.textContent = `${p.cantidad} x ${p.descripcion}`;
       lista.appendChild(li);
     });
 
@@ -764,7 +764,7 @@ const entrega = document.getElementById("entregaResumen").textContent.trim().rep
 const folio = document.getElementById("folioResumen").textContent.trim().replace(/\s+/g, '_');
 
 // Ejemplo: resumen_PDDZAP-0123_CHEMA_2025-07-02_13-45-22.jpg
-const nombreArchivo = resumen_${folio}_${entrega}_${fechaStr}_${horaStr}.jpg;
+const nombreArchivo = `resumen_${folio}_${entrega}_${fechaStr}_${horaStr}.jpg`;
 
 link.download = nombreArchivo;
 
