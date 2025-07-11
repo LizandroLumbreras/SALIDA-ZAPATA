@@ -28,6 +28,17 @@
       border-radius: 8px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
+    .boton-accion {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .boton-accion:hover {
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
@@ -38,7 +49,7 @@
   <label>Entrega: <input type="text" id="entrega"></label><br><br>
   <label>Recibe: <input type="text" id="recibe"></label><br><br>
   <label>Destino: <input type="text" id="destino"></label><br><br>
-  <button onclick="irAPantalla('pantalla2')">Continuar</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">Continuar</button>
 </div>
 
 <div id="pantalla2" class="pantalla">
@@ -57,7 +68,9 @@
   <h3>🧾 Lista temporal:</h3>
   <ul id="listaTemporal"></ul>
   <br>
-  <button onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla3')">➕ Agregar más artículos</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
+  <button class="boton-accion" onclick="finalizarCaptura()">✅ Finalizar y guardar</button>
 </div>
 
 <script>
@@ -114,6 +127,15 @@ function actualizarListaTemporal() {
     li.textContent = `${item.cantidad} x ${item.nombre} (codigo ${item.codigo})`;
     ul.appendChild(li);
   });
+}
+
+function finalizarCaptura() {
+  if (listaTemporal.length === 0) {
+    alert("No hay productos agregados.");
+    return;
+  }
+  alert("✅ Captura lista para guardar. Aquí iría la lógica de Firebase y firmas.");
+  console.log("Lista final:", listaTemporal);
 }
 </script>
 
