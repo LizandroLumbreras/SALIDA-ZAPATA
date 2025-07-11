@@ -706,7 +706,7 @@ if (!coincidencias.empty) {
     lista.innerHTML = "";
     productosTemporal.forEach(p => {
       const li = document.createElement("li");
-      li.textContent = ${p.cantidad} x ${p.descripcion};
+      li.textContent = `${p.cantidad} x ${p.descripcion}`;
       lista.appendChild(li);
     });
 
