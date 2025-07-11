@@ -227,7 +227,7 @@ body {
 </div>
 
 <!-- AGREGA este contenedor que oculta la app principal -->
-<div id="mainApp" style="display: none;">
+<div id="mainApp" style="display: block;">
   <!-- Aquí empieza la sección 1 existente -->
   <div id="seccion1">
     <h2>Registrar salida - Almacén Zapata</h2>
@@ -396,7 +396,7 @@ buscador.addEventListener("input", () => {
     const matchCodigo = producto.id.includes(texto);
     if (matchTexto || matchCodigo) {
       const div = document.createElement("div");
-      div.textContent = ${producto.concepto};
+      div.textContent = producto.concepto;
       div.onclick = () => seleccionarProducto(producto);
       resultados.appendChild(div);
     }
