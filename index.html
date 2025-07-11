@@ -293,29 +293,6 @@ function irAPantalla(id) {
 
 }
 
-function renderizarProductos() {
-  const contenedor = document.getElementById("listaProductos");
-  contenedor.innerHTML = "";
-  productosCharola.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "producto";
-    div.innerHTML = `
-      <span>${p.nombre}</span>
-      <button onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">➕</button>
-    `;
-    contenedor.appendChild(div);
-  });
-}
-
-function agregarCantidad(nombre, codigo) {
-  const cantidad = prompt(`Cantidad para ${nombre}:`);
-  const num = parseInt(cantidad);
-  if (!isNaN(num) && num > 0) {
-    listaTemporal.push({ nombre, codigo, cantidad: num });
-    actualizarListaTemporal();
-  }
-}
-
 function actualizarListaTemporal() {
   const ul = document.getElementById("listaTemporal");
   ul.innerHTML = "";
