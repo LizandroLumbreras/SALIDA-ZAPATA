@@ -393,7 +393,7 @@ buscador.addEventListener("input", () => {
     const matchCodigo = producto.id.includes(texto);
     if (matchTexto || matchCodigo) {
       const div = document.createElement("div");
-     div.textContent = producto.concepto;
+     div.textContent = producto.concepto; // ✅ CORRECTO
       div.onclick = () => seleccionarProducto(producto);
       resultados.appendChild(div);
     }
@@ -703,7 +703,7 @@ if (!coincidencias.empty) {
     lista.innerHTML = "";
     productosTemporal.forEach(p => {
       const li = document.createElement("li");
-      li.textContent = `${p.cantidad} x ${p.descripcion}`;
+      li.textContent = `${p.cantidad} x ${p.descripcion}`; // ✅
       lista.appendChild(li);
     });
 
