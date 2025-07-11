@@ -4,176 +4,119 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Salida de Inventario - Almacén Zapata</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
     .pantalla { display: none; }
     .visible { display: block; }
-    button { padding: 10px 20px; margin: 10px; background: #0d47a1; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    input, select { padding: 10px; width: 100%; margin: 5px 0; }
-    .tarjeta { padding: 10px; margin: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px #ccc; cursor: pointer; }
-    .resumen { background: white; padding: 10px; margin-top: 20px; border-radius: 5px; }
+    .tarjeta {
+      background: white;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      text-align: center;
+      font-weight: bold;
+    }
+    .tarjeta:hover { background: #e0f7fa; }
+    .producto {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      background: white;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
-  <div id="pantalla1" class="pantalla visible">
-    <h2>Datos Generales de la Salida</h2>
-    <label>Folio: <input id="folio" readonly /></label>
-    <label>Fecha: <input id="fecha" readonly /></label>
-    <label>Entrega: <input id="entrega" /></label>
-    <label>Recibe: <input id="recibe" /></label>
-    <button onclick="irAPantalla2()">Continuar</button>
-  </div>
 
-  <div id="pantalla2" class="pantalla">
-    <h2>Selecciona Clasificación</h2>
-    <div id="clasificaciones"></div>
-    <button onclick="volverPantalla1()">Volver</button>
-  </div>
+<div id="pantalla1" class="pantalla visible">
+  <h2>Registrar salida - Datos generales</h2>
+  <label>Fecha: <input type="date" id="fecha"></label><br><br>
+  <label>Entrega: <input type="text" id="entrega"></label><br><br>
+  <label>Recibe: <input type="text" id="recibe"></label><br><br>
+  <label>Destino: <input type="text" id="destino"></label><br><br>
+  <button onclick="irAPantalla('pantalla2')">Continuar</button>
+</div>
 
-  <div id="pantalla3" class="pantalla">
-    <h2>Selecciona Artículo</h2>
-    <div id="articulos"></div>
-    <button onclick="volverPantalla2()">Volver</button>
-  </div>
+<div id="pantalla2" class="pantalla">
+  <h2>Selecciona una línea</h2>
+  <div class="tarjeta" onclick="irAPantalla('pantalla3')">REYMA</div>
+</div>
 
-  <div id="pantalla4" class="pantalla">
-    <h2>Ingresa Cantidad</h2>
-    <p id="detalleProducto"></p>
-    <input type="number" id="cantidad" placeholder="Cantidad a salir" />
-    <button onclick="agregarProducto()">Agregar</button>
-    <button onclick="volverPantalla2()">Agregar Otro</button>
-    <button onclick="irAPantallaResumen()">Ver Resumen</button>
-  </div>
+<div id="pantalla3" class="pantalla">
+  <h2>Categoría REYMA</h2>
+  <div class="tarjeta" onclick="irAPantalla('pantalla4')">CHAROLA</div>
+</div>
 
-  <div id="pantalla5" class="pantalla">
-    <h2>Resumen de Salida</h2>
-    <div class="resumen" id="resumen"></div>
-    <button onclick="guardarSalida()">Guardar Salida</button>
-  </div>
+<div id="pantalla4" class="pantalla">
+  <h2>Productos REYMA - CHAROLA</h2>
+  <div id="listaProductos"></div>
+  <h3>🧾 Lista temporal:</h3>
+  <ul id="listaTemporal"></ul>
+  <br>
+  <button onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
+</div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
-      authDomain: "inventariopv-643f1.firebaseapp.com",
-      projectId: "inventariopv-643f1",
-      storageBucket: "inventariopv-643f1.appspot.com",
-      messagingSenderId: "96242533231",
-      appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+<script>
+const productosCharola = [
+  { nombre: "CH855RE", codigo: "365" },
+  { nombre: "CH066RE", codigo: "355" },
+  { nombre: "CH007", codigo: "357" },
+  { nombre: "CH835", codigo: "364" },
+  { nombre: "CH105", codigo: "363" },
+  { nombre: "CH1014", codigo: "7037" },
+  { nombre: "CH9H", codigo: "2178" },
+  { nombre: "CH8S", codigo: "14578" },
+  { nombre: "CH855MA", codigo: "7016" },
+  { nombre: "CH066MA", codigo: "7221" }
+];
 
-    const lineas = {
-      "REYMA": ["352","355","357"],
-      "CONVERMEX": ["5282","5283"],
-      "JAGUAR": ["020054","450053"]
-    };
+const listaTemporal = [];
 
-    let datosGenerales = {};
-    let clasificacionActual = "";
-    let productoActual = null;
-    let listaProductos = [];
+function irAPantalla(id) {
+  document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
 
-    async function generarFolio() {
-      const docRef = db.collection("consecutivos").doc("Almacen_Zapata");
-      const docSnap = await docRef.get();
-      let folio = 1;
-      if (docSnap.exists) {
-        folio = (docSnap.data().salidas || 0) + 1;
-      }
-      await docRef.set({ salidas: folio }, { merge: true });
-      document.getElementById("folio").value = folio;
-    }
+  if (id === 'pantalla4') renderizarProductos();
+}
 
-    function irAPantalla2() {
-      datosGenerales = {
-        folio: document.getElementById("folio").value,
-        fecha: new Date().toISOString().split("T")[0],
-        entrega: document.getElementById("entrega").value,
-        recibe: document.getElementById("recibe").value
-      };
-      mostrarPantalla("pantalla2");
-    }
+function renderizarProductos() {
+  const contenedor = document.getElementById("listaProductos");
+  contenedor.innerHTML = "";
+  productosCharola.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `
+      <span>${p.nombre}</span>
+      <button onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">➕</button>
+    `;
+    contenedor.appendChild(div);
+  });
+}
 
-    function volverPantalla1() { mostrarPantalla("pantalla1"); }
-    function volverPantalla2() { mostrarPantalla("pantalla2"); }
+function agregarCantidad(nombre, codigo) {
+  const cantidad = prompt(`Cantidad para ${nombre}:`);
+  const num = parseInt(cantidad);
+  if (!isNaN(num) && num > 0) {
+    listaTemporal.push({ nombre, codigo, cantidad: num });
+    actualizarListaTemporal();
+  }
+}
 
-    function mostrarPantalla(id) {
-      document.querySelectorAll(".pantalla").forEach(div => div.classList.remove("visible"));
-      document.getElementById(id).classList.add("visible");
-    }
+function actualizarListaTemporal() {
+  const ul = document.getElementById("listaTemporal");
+  ul.innerHTML = "";
+  listaTemporal.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.cantidad} x ${item.nombre} (codigo ${item.codigo})`;
+    ul.appendChild(li);
+  });
+}
+</script>
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      document.getElementById("fecha").value = new Date().toISOString().split("T")[0];
-      await generarFolio();
-
-      const clasifCont = document.getElementById("clasificaciones");
-      for (const nombre in lineas) {
-        const div = document.createElement("div");
-        div.className = "tarjeta";
-        div.innerText = nombre;
-        div.onclick = () => mostrarArticulos(nombre);
-        clasifCont.appendChild(div);
-      }
-    });
-
-    async function mostrarArticulos(clasif) {
-      clasificacionActual = clasif;
-      const codigos = lineas[clasif];
-      const productosSnap = await db.collection("productos").get();
-      const cont = document.getElementById("articulos");
-      cont.innerHTML = "";
-      productosSnap.forEach(doc => {
-        const d = doc.data();
-        const codigoProd = d.Codigo?.toString().trim();
-if (codigoProd && codigos.includes(codigoProd)) {
-          const div = document.createElement("div");
-          div.className = "tarjeta";
-          div.innerText = `${d.Codigo} - ${d.Concepto}`;
-          div.onclick = () => seleccionarProducto(d.Codigo, d.Concepto);
-          cont.appendChild(div);
-        }
-      });
-      mostrarPantalla("pantalla3");
-    }
-
-    function seleccionarProducto(codigo, descripcion) {
-      productoActual = { codigo, descripcion };
-      document.getElementById("detalleProducto").innerText = `${codigo} - ${descripcion}`;
-      document.getElementById("cantidad").value = "";
-      mostrarPantalla("pantalla4");
-    }
-
-    function agregarProducto() {
-      const cantidad = parseFloat(document.getElementById("cantidad").value);
-      if (!cantidad || cantidad <= 0) return alert("Cantidad no válida");
-      listaProductos.push({ ...productoActual, cantidad });
-      alert("Producto agregado");
-    }
-
-    function irAPantallaResumen() {
-      const resumen = document.getElementById("resumen");
-      resumen.innerHTML = "";
-      listaProductos.forEach(p => {
-        const div = document.createElement("div");
-        div.innerText = `${p.codigo} - ${p.descripcion} | Cantidad: ${p.cantidad}`;
-        resumen.appendChild(div);
-      });
-      mostrarPantalla("pantalla5");
-    }
-
-    async function guardarSalida() {
-      const salida = {
-        ...datosGenerales,
-        productos: listaProductos,
-        timestamp: new Date()
-      };
-      await db.collection("almacenes").doc("Almacen_Zapata").collection("salidas").add(salida);
-      alert("Salida guardada correctamente");
-      location.reload();
-    }
-  </script>
 </body>
 </html>
+
