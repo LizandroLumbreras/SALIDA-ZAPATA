@@ -126,12 +126,12 @@
       const cont = document.getElementById("articulos");
       cont.innerHTML = "";
       productosSnap.forEach(doc => {
-        if (codigos.includes(doc.id)) {
-          const d = doc.data();
+        const d = doc.data();
+        if (codigos.includes(d.Codigo)) {
           const div = document.createElement("div");
           div.className = "tarjeta";
-          div.innerText = `${doc.id} - ${d.Concepto}`;
-          div.onclick = () => seleccionarProducto(doc.id, d.Concepto);
+          div.innerText = `${d.Codigo} - ${d.Concepto}`;
+          div.onclick = () => seleccionarProducto(d.Codigo, d.Concepto);
           cont.appendChild(div);
         }
       });
