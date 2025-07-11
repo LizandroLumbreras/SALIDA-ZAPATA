@@ -74,6 +74,46 @@
 </div>
 
 <script>
+  function mostrarProductos(tipo) {
+  let productos = [];
+  let titulo = "Productos";
+
+  if (tipo === 'CHAROLA') {
+    productos = productosCharola;
+    titulo = "Productos REYMA - CHAROLA";
+  } else if (tipo === 'CONTENEDOR') {
+    productos = productosContenedor;
+    titulo = "Productos REYMA - CONTENEDOR";
+  } else if (tipo === 'PLATOS_TERMICOS') {
+    productos = productosPlatosTermicos;
+    titulo = "Productos REYMA - PLATOS TERMICOS";
+  } else if (tipo === 'CHAROLAS_COLORES') {
+    productos = productosCharolasColores;
+    titulo = "Productos REYMA - CHAROLAS COLORES";
+  } else if (tipo === 'CONTENEDORES_NEGROS') {
+    productos = productosContenedoresNegros;
+    titulo = "Productos REYMA - CONTENEDORES NEGROS";
+  } else if (tipo === 'VASOS_PLASTICO') {
+    productos = productosVasosPlastico;
+    titulo = "Productos REYMA - VASOS PLASTICOS";
+  }
+
+  document.getElementById("tituloProductos").textContent = titulo;
+  const contenedor = document.getElementById("listaProductos");
+  contenedor.innerHTML = "";
+
+  productos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `
+      <span>${p.nombre}</span>
+      <button onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">➕</button>
+    `;
+    contenedor.appendChild(div);
+  });
+
+  irAPantalla('pantalla4');
+}
 const productosCharola = [
   { nombre: "CH855RE", codigo: "365" },
   { nombre: "CH066RE", codigo: "355" },
@@ -86,7 +126,79 @@ const productosCharola = [
   { nombre: "CH855MA", codigo: "7016" },
   { nombre: "CH066MA", codigo: "7221" }
 ];
+const productosContenedor = [
+  { nombre: "CN7X7D4P", codigo: "7689" },
+  { nombre: "CN7X7L4P", codigo: "7686" },
+  { nombre: "CN8X8D4P", codigo: "2096" },
+  { nombre: "CN8X8L4P", codigo: "1886" },
+  { nombre: "CN9X9D4P", codigo: "2097" },
+  { nombre: "CN9X9L4P", codigo: "1655" },
+  { nombre: "CNH10P (HAM)", codigo: "1901" },
+  { nombre: "CNHD (HOT DOG)", codigo: "7417" },
+  { nombre: "CNHO (HOGIE)", codigo: "352" }
+];
 
+const productosPlatosTermicos = [
+  { nombre: "PH4", codigo: "12146" },
+  { nombre: "PH6", codigo: "2409" },
+  { nombre: "PH8", codigo: "2410" },
+  { nombre: "PH10", codigo: "020013" },
+  { nombre: "PT006", codigo: "2411" },
+  { nombre: "PT9D", codigo: "2188" },
+  { nombre: "PT8D", codigo: "2408" },
+  { nombre: "PT8L", codigo: "2190" },
+  { nombre: "PT10D", codigo: "3987" },
+  { nombre: "PT10L", codigo: "3614" }
+];
+
+const productosCharolasColores = [
+  { nombre: "CH855AM", codigo: "1347" },
+  { nombre: "CH855NE", codigo: "020124" },
+  { nombre: "CH855RS", codigo: "020126" },
+  { nombre: "CH855AZUL", codigo: "020127" },
+  { nombre: "CH855RJ", codigo: "020053" },
+  { nombre: "CH007AZUL", codigo: "2351" },
+  { nombre: "CH007AM", codigo: "1349" },
+  { nombre: "CH007NE", codigo: "055500500" },
+  { nombre: "CH007RS", codigo: "2350" },
+  { nombre: "CH007RJ", codigo: "450029" },
+  { nombre: "CH9HAM", codigo: "3864" },
+  { nombre: "CH9HNE", codigo: "3865" },
+  { nombre: "CH9HRS", codigo: "3864" },
+  { nombre: "CH9HAZUL", codigo: "3865" },
+  { nombre: "CH9HRJ", codigo: "3865" },
+  { nombre: "CH066AM", codigo: "3738" },
+  { nombre: "CH8SNEGRA", codigo: "14579" }
+];
+
+const productosContenedoresNegros = [
+  { nombre: "CN7X7LNE", codigo: "020270" },
+  { nombre: "CN7X7DNE", codigo: "020270" },
+  { nombre: "CN8X8DNE", codigo: "450065" },
+  { nombre: "CN8X8LNE", codigo: "450065" },
+  { nombre: "CN9X9DNE", codigo: "750178" },
+  { nombre: "CN9X9LNE", codigo: "750175" },
+  { nombre: "CGHAMNEGRA", codigo: "750182" }
+];
+
+const productosVasosPlastico = [
+  { nombre: "VP4A", codigo: "020167" },
+  { nombre: "VP4CH", codigo: "020262" },
+  { nombre: "VP55A", codigo: "2397" },
+  { nombre: "VP51/2", codigo: "2161" },
+  { nombre: "VP6", codigo: "2162" },
+  { nombre: "VP7", codigo: "5853" },
+  { nombre: "VP8", codigo: "4410" },
+  { nombre: "VP10", codigo: "5078" },
+  { nombre: "VP12", codigo: "1502" },
+  { nombre: "VP14", codigo: "1623" },
+  { nombre: "VP16A", codigo: "4395" },
+  { nombre: "VP16L", codigo: "1386413864" },
+  { nombre: "ENV1LT", codigo: "020066" },
+  { nombre: "ENV1/2LT", codigo: "5666" },
+  { nombre: "ENV1/4LT", codigo: "450083" },
+  { nombre: "TAPA REY (TR) VP", codigo: "020183" }
+];
 const listaTemporal = [];
 
 function irAPantalla(id) {
