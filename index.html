@@ -266,11 +266,12 @@ function cerrarPopup() {
       { nombre: "POPOTE BIO REYMA", tipo: 'POPOTE_BIO' },
       { nombre: "LÍNEA BIO REYMA", tipo: 'LINEA_BIO' }
     ];
-  } else if (marca === 'BIOPLAST') {
-    categorias = [
-      { nombre: "PRODUCTOS BIOPLAST", tipo: 'BIOPLAST' }
-    ];
-  }
+ else if (marca === 'BIOPLAST') {
+  categorias = [
+    { nombre: "Contenedores BIOPLAST", tipo: 'BIOPLAST_CONTENEDORES' },
+    { nombre: "Charolas BIOPLAST", tipo: 'BIOPLAST_CHAROLAS' }
+  ];
+}
 
   categorias.forEach(cat => {
     const div = document.createElement("div");
@@ -321,6 +322,14 @@ else if (tipo === 'VASOS_TERMICOS') {
   productos = productosLineaBio;
   titulo = "Productos REYMA - LÍNEA BIO";
 }
+    else if (tipo === 'BIOPLAST_CONTENEDORES') {
+  productos = productosBioplastContenedores;
+  titulo = "BIOPLAST - Contenedores";
+} else if (tipo === 'BIOPLAST_CHAROLAS') {
+  productos = productosBioplastCharolas;
+  titulo = "BIOPLAST - Charolas";
+}
+
   document.getElementById("tituloProductos").textContent = titulo;
   const contenedor = document.getElementById("listaProductos");
   contenedor.innerHTML = "";
@@ -469,6 +478,22 @@ const productosVasosPlastico = [
   { nombre: "PT8LBIO", codigo: "" },
   { nombre: "PT8DBIO", codigo: "" }
     ];
+  const productosBioplastContenedores = [
+  { nombre: "CN7X7L4PBIO TINAJITA", codigo: "770110" },
+  { nombre: "CN7X7D4PBIO TINAJITA", codigo: "770210" },
+  { nombre: "CN8X8D4PBIO TINAJITA", codigo: "880210" },
+  { nombre: "CN8X8L4PBIO TINAJITA", codigo: "880110" },
+  { nombre: "CN9X9D4PBIO TINAJITA", codigo: "990210" },
+  { nombre: "CN9X9L4PBIO TINAJITA", codigo: "990110" }
+];
+
+const productosBioplastCharolas = [
+  { nombre: "CH066MABIO TINAJITA CREMA", codigo: "" },
+  { nombre: "CH855MABIO TINAJITA CREMA", codigo: "" },
+  { nombre: "CH066MABIO TINAJITA BLANCA", codigo: "" },
+  { nombre: "CH855MABIO TINAJITA BLANCA", codigo: "" }
+];
+
 const listaTemporal = [];
 
 function irAPantalla(id) {
