@@ -189,6 +189,7 @@
 <div class="tarjeta" onclick="mostrarProductos('CHAROLAS_COLORES')">CHAROLAS COLORES</div>
 <div class="tarjeta" onclick="mostrarProductos('CONTENEDORES_NEGROS')">CONTENEDORES NEGROS</div>
 <div class="tarjeta" onclick="mostrarProductos('VASOS_PLASTICO')">VASOS PLASTICOS</div>
+  <div class="tarjeta" onclick="mostrarProductos('VASOS_TERMICOS')">VASOS TÉRMICOS</div>
 </div>
 
 <div id="pantalla4" class="pantalla">
@@ -263,7 +264,10 @@ function cerrarPopup() {
     productos = productosVasosPlastico;
     titulo = "Productos REYMA - VASOS PLASTICOS";
   }
-
+else if (tipo === 'VASOS_TERMICOS') {
+  productos = productosVasosTermicos;
+  titulo = "Productos REYMA - VASOS TÉRMICOS";
+}
   document.getElementById("tituloProductos").textContent = titulo;
   const contenedor = document.getElementById("listaProductos");
   contenedor.innerHTML = "";
@@ -362,6 +366,20 @@ const productosVasosPlastico = [
   { nombre: "ENV1/2LT", codigo: "5666" },
   { nombre: "ENV1/4LT", codigo: "450083" },
   { nombre: "TAPA REY (TR) VP", codigo: "020183" }
+];
+  const productosVasosTermicos = [
+  { nombre: "VT4A", codigo: "020073" },
+  { nombre: "VT4CH", codigo: "7562" },
+  { nombre: "VT6", codigo: "450006" },
+  { nombre: "VT8", codigo: "7560" },
+  { nombre: "VT8A", codigo: "450010" },
+  { nombre: "VT10", codigo: "450007" },
+  { nombre: "VT12", codigo: "7011" },
+  { nombre: "VT12A", codigo: "020339" },
+  { nombre: "VT14", codigo: "450008" },
+  { nombre: "VT16", codigo: "7013" },
+  { nombre: "VT1/2LT", codigo: "" },
+  { nombre: "VT1LT", codigo: "" }
 ];
 const listaTemporal = [];
 
