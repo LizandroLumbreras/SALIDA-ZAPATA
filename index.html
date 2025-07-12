@@ -98,6 +98,33 @@
   background: #b0bec5;
   color: black;
 }
+    #pantalla1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#pantalla1 label {
+  display: block;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+#pantalla1 input {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+#pantalla1 h2 {
+  text-align: center;
+}
     
   </style>
 </head>
@@ -109,7 +136,7 @@
   <label>Entrega: <input type="text" id="entrega"></label><br><br>
   <label>Recibe: <input type="text" id="recibe"></label><br><br>
   <label>Destino: <input type="text" id="destino"></label><br><br>
-  <button class="boton-accion" onclick="irAPantalla('pantalla2')">Continuar</button>
+  <button class="boton-accion" onclick="validarDatosGenerales()">Continuar</button>
 </div>
 
 <div id="pantalla2" class="pantalla">
@@ -139,6 +166,20 @@
 </div>
 
 <script>
+  function validarDatosGenerales() {
+  const fecha = document.getElementById("fecha").value.trim();
+  const entrega = document.getElementById("entrega").value.trim();
+  const recibe = document.getElementById("recibe").value.trim();
+  const destino = document.getElementById("destino").value.trim();
+
+  if (!fecha || !entrega || !recibe || !destino) {
+    alert("Por favor completa todos los campos antes de continuar.");
+    return;
+  }
+
+  irAPantalla('pantalla2');
+}
+
   let productoSeleccionado = null;
 
 function agregarCantidad(nombre, codigo) {
@@ -321,8 +362,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
-<div id="popupCantidad" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
-background:white; padding:20px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:999;">
+<div id="popupCantidad">
   <h3>Agregar cantidad</h3>
   <p id="nombreProductoSeleccionado"></p>
   <input type="number" id="inputCantidad" placeholder="Cantidad" style="width:100%; padding:10px; margin:10px 0;">
