@@ -178,8 +178,10 @@
 
 <div id="pantalla2" class="pantalla">
   <h2>Selecciona una línea</h2>
-  <div class="tarjeta" onclick="irAPantalla('pantalla3')">REYMA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('REYMA')">REYMA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('BIOPLAST')">BIOPLAST</div>
 </div>
+
 
 <div id="pantalla3" class="pantalla">
   <h2>Categoría REYMA</h2>
@@ -190,6 +192,10 @@
 <div class="tarjeta" onclick="mostrarProductos('CONTENEDORES_NEGROS')">CONTENEDORES NEGROS</div>
 <div class="tarjeta" onclick="mostrarProductos('VASOS_PLASTICO')">VASOS PLASTICOS</div>
   <div class="tarjeta" onclick="mostrarProductos('VASOS_TERMICOS')">VASOS TÉRMICOS</div>
+  <div class="tarjeta" onclick="mostrarProductos('LINEA_EU')">LÍNEA EU (VPP y TP)</div>
+<div class="tarjeta" onclick="mostrarProductos('POPOTE_BIO')">POPOTE BIO REYMA</div>
+  <div class="tarjeta" onclick="mostrarProductos('LINEA_BIO')">LÍNEA BIO REYMA</div>
+
 </div>
 
 <div id="pantalla4" class="pantalla">
@@ -241,6 +247,41 @@ function confirmarCantidad() {
 function cerrarPopup() {
   document.getElementById("popupCantidad").style.display = "none";
 }
+  function mostrarCategorias(marca) {
+  const pantalla3 = document.getElementById("pantalla3");
+  pantalla3.innerHTML = `<h2>Categoría ${marca}</h2>`;
+
+  let categorias = [];
+
+  if (marca === 'REYMA') {
+    categorias = [
+      { nombre: "CHAROLA", tipo: 'CHAROLA' },
+      { nombre: "CONTENEDOR", tipo: 'CONTENEDOR' },
+      { nombre: "PLATOS TERMICOS", tipo: 'PLATOS_TERMICOS' },
+      { nombre: "CHAROLAS COLORES", tipo: 'CHAROLAS_COLORES' },
+      { nombre: "CONTENEDORES NEGROS", tipo: 'CONTENEDORES_NEGROS' },
+      { nombre: "VASOS PLASTICOS", tipo: 'VASOS_PLASTICO' },
+      { nombre: "VASOS TÉRMICOS", tipo: 'VASOS_TERMICOS' },
+      { nombre: "LÍNEA EU (VPP y TP)", tipo: 'LINEA_EU' },
+      { nombre: "POPOTE BIO REYMA", tipo: 'POPOTE_BIO' },
+      { nombre: "LÍNEA BIO REYMA", tipo: 'LINEA_BIO' }
+    ];
+  } else if (marca === 'BIOPLAST') {
+    categorias = [
+      { nombre: "PRODUCTOS BIOPLAST", tipo: 'BIOPLAST' }
+    ];
+  }
+
+  categorias.forEach(cat => {
+    const div = document.createElement("div");
+    div.className = "tarjeta";
+    div.onclick = () => mostrarProductos(cat.tipo);
+    div.textContent = cat.nombre;
+    pantalla3.appendChild(div);
+  });
+
+  irAPantalla('pantalla3');
+}
   function mostrarProductos(tipo) {
   let productos = [];
   let titulo = "Productos";
@@ -267,6 +308,18 @@ function cerrarPopup() {
 else if (tipo === 'VASOS_TERMICOS') {
   productos = productosVasosTermicos;
   titulo = "Productos REYMA - VASOS TÉRMICOS";
+}
+    else if (tipo === 'LINEA_EU') {
+  productos = productosLineaEU;
+  titulo = "Productos REYMA - LÍNEA EU (VPP y TP)";
+}
+    else if (tipo === 'POPOTE_BIO') {
+  productos = productosPopoteBio;
+  titulo = "Productos REYMA - POPOTE BIO";
+}
+    else if (tipo === 'LINEA_BIO') {
+  productos = productosLineaBio;
+  titulo = "Productos REYMA - LÍNEA BIO";
 }
   document.getElementById("tituloProductos").textContent = titulo;
   const contenedor = document.getElementById("listaProductos");
@@ -381,6 +434,41 @@ const productosVasosPlastico = [
   { nombre: "VT1/2LT", codigo: "" },
   { nombre: "VT1LT", codigo: "" }
 ];
+  const productosLineaEU = [
+  { nombre: "VP10EU", codigo: "450091" },
+  { nombre: "VP12EU", codigo: "450090" },
+  { nombre: "VP14EU", codigo: "141450" },
+  { nombre: "VP16EU", codigo: "450086" },
+  { nombre: "VP32EU", codigo: "450087" },
+  { nombre: "TPEUR (RANURA)", codigo: "450101" },
+  { nombre: "TPEU (LISA)", codigo: "450101" },
+  { nombre: "TPDEU (DOMO)", codigo: "450101" },
+  { nombre: "TP32EUR (RANURA)", codigo: "450095" },
+  { nombre: "TP32EU (LISA)", codigo: "450095" },
+  { nombre: "TPD16 EU", codigo: "32322050" }
+];
+  const productosPopoteBio = [
+  { nombre: "ESTUCH 21 BIO 4/500", codigo: "450079" },
+  { nombre: "ESTUCH 26 BIO 4/500", codigo: "450081" }
+];
+  const productosLineaBio = [
+  { nombre: "CH066MABIO", codigo: "020319" },
+  { nombre: "CH855MABIO", codigo: "020318" },
+  { nombre: "CN7X7L4PBIO", codigo: "020297" },
+  { nombre: "CN7X7D4PBIO", codigo: "020306" },
+  { nombre: "CN8X8L4PBIO", codigo: "020303" },
+  { nombre: "CN8X8D4PBIO", codigo: "020300" },
+  { nombre: "CN9X9D4PBIO", codigo: "020312" },
+  { nombre: "CN9X9L4PBIO", codigo: "020310" },
+  { nombre: "CNH10PBIO", codigo: "450089" },
+  { nombre: "CH835BIO", codigo: "" },
+  { nombre: "CH007BIO", codigo: "450100" },
+  { nombre: "CH855REBIO", codigo: "" },
+  { nombre: "CH9HBIO", codigo: "" },
+  { nombre: "PT9DBIO", codigo: "" },
+  { nombre: "PT8LBIO", codigo: "" },
+  { nombre: "PT8DBIO", codigo: "" }
+    ];
 const listaTemporal = [];
 
 function irAPantalla(id) {
