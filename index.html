@@ -180,6 +180,9 @@
   <h2>Selecciona una línea</h2>
   <div class="tarjeta" onclick="mostrarCategorias('REYMA')">REYMA</div>
   <div class="tarjeta" onclick="mostrarCategorias('BIOPLAST')">BIOPLAST</div>
+  <div class="tarjeta" onclick="mostrarCategorias('JAGUAR')">JAGUAR</div>
+   <div class="tarjeta" onclick="mostrarCategorias('BIGCOLA')">BIG COLA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('CONVERMEX')">CONVERMEX</div>
 </div>
 
 
@@ -272,6 +275,22 @@ function cerrarPopup() {
     { nombre: "Charolas BIOPLAST", tipo: 'BIOPLAST_CHAROLAS' }
   ];
 }
+    else if (marca === 'JAGUAR') {
+  categorias = [
+    { nombre: "Productos JAGUAR", tipo: 'JAGUAR_GENERAL' }
+  ];
+}
+    else if (marca === 'BIGCOLA') {
+  categorias = [
+    { nombre: "Productos BIG COLA", tipo: 'BIGCOLA_GENERAL' }
+  ];
+}
+    else if (marca === 'CONVERMEX') {
+  categorias = [
+    { nombre: "Productos CONVERMEX", tipo: 'CONVERMEX_GENERAL' }
+  ];
+}
+
 
   categorias.forEach(cat => {
     const div = document.createElement("div");
@@ -328,6 +347,18 @@ else if (tipo === 'VASOS_TERMICOS') {
 } else if (tipo === 'BIOPLAST_CHAROLAS') {
   productos = productosBioplastCharolas;
   titulo = "BIOPLAST - Charolas";
+}
+else if (tipo === 'JAGUAR_GENERAL') {
+  productos = productosJaguarGeneral;
+  titulo = "Productos JAGUAR";
+}
+    else if (tipo === 'BIGCOLA_GENERAL') {
+  productos = productosBigColaGeneral;
+  titulo = "Productos BIG COLA";
+}
+    else if (tipo === 'CONVERMEX_GENERAL') {
+  productos = productosConvermexGeneral;
+  titulo = "Productos CONVERMEX";
 }
 
   document.getElementById("tituloProductos").textContent = titulo;
@@ -492,6 +523,80 @@ const productosBioplastCharolas = [
   { nombre: "CH855MABIO TINAJITA CREMA", codigo: "" },
   { nombre: "CH066MABIO TINAJITA BLANCA", codigo: "" },
   { nombre: "CH855MABIO TINAJITA BLANCA", codigo: "" }
+];
+const productosJaguarGeneral = [
+  { nombre: "PT 9D", codigo: "020051" },
+  { nombre: "PT 8L", codigo: "020054" },
+  { nombre: "CH855", codigo: "2033" },
+  { nombre: "CH066", codigo: "2164" },
+  { nombre: "PT 6 PASTELERO", codigo: "020053" },
+  { nombre: "VP10", codigo: "1484" },
+  { nombre: "VP 5 1/2", codigo: "2161" },
+  { nombre: "VP 8", codigo: "1639" },
+  { nombre: "VP 6", codigo: "2162" },
+  { nombre: "PT PH6", codigo: "020051" },
+  { nombre: "PT PH8", codigo: "020052" },
+  { nombre: "PT 8 DIV", codigo: "020055" },
+  { nombre: "JUGUERO MEDIO", codigo: "1356" },
+  { nombre: "JUGUERO 1L", codigo: "1355" },
+  { nombre: "TAP P/ENV JUGUERO", codigo: "290005" },
+  { nombre: "PH 8", codigo: "020052" },
+  { nombre: "VP 12", codigo: "1409" },
+  { nombre: "VP 16B", codigo: "1486" },
+  { nombre: "VP 14", codigo: "1485" },
+  { nombre: "VP 16ALT", codigo: "450053" },
+  { nombre: "PT10 1/4 DIV", codigo: "450002" }
+];
+  const productosBigColaGeneral = [
+  { nombre: "BIG COLA 3 LITROS", codigo: "060028" },
+  { nombre: "BIG COLA 1.5", codigo: "4451" },
+  { nombre: "BIG COLA 500 ML", codigo: "250010" },
+  { nombre: "CIFRUT 3.3", codigo: "7506241" },
+  { nombre: "CIFRUT 625", codigo: "210010" },
+  { nombre: "CIFRUT 300", codigo: "7503033" },
+  { nombre: "BIG COLA 300", codigo: "14220" },
+  { nombre: "SPORADE 625", codigo: "060015" },
+  { nombre: "STAR COLA 355", codigo: "060007" },
+  { nombre: "STAR LIMA 355", codigo: "060007" },
+  { nombre: "STAR NARANJA 355", codigo: "060007" },
+  { nombre: "CHECHI FRESCO 140 ML", codigo: "210004" },
+  { nombre: "AGUA 500 ML", codigo: "3062" },
+  { nombre: "AGUA 1.5", codigo: "2382" },
+  { nombre: "AGUA 1 L", codigo: "3217" },
+  { nombre: "STAR SURTIDA", codigo: "060007" }
+];
+const productosConvermexGeneral = [
+  { nombre: "V104", codigo: "104104" },
+  { nombre: "V106", codigo: "106106" },
+  { nombre: "V108", codigo: "108108" },
+  { nombre: "V110", codigo: "110110" },
+  { nombre: "V112", codigo: "112112" },
+  { nombre: "V114", codigo: "114114" },
+  { nombre: "V116", codigo: "116116" },
+  { nombre: "V132", codigo: "132132" },
+  { nombre: "ENV704", codigo: "704704" },
+  { nombre: "ENV706", codigo: "706706" },
+  { nombre: "ENV708", codigo: "708708" },
+  { nombre: "ENV712", codigo: "712712" },
+  { nombre: "ENV716", codigo: "716716" },
+  { nombre: "ENV732", codigo: "732732" },
+  { nombre: "ENV760", codigo: "760760" },
+  { nombre: "TP404", codigo: "404404" },
+  { nombre: "TP406", codigo: "406406" },
+  { nombre: "TP408", codigo: "408408" },
+  { nombre: "TP410", codigo: "410410" },
+  { nombre: "TP412", codigo: "412412" },
+  { nombre: "TP414", codigo: "414414" },
+  { nombre: "TP416", codigo: "416416" },
+  { nombre: "TP516", codigo: "516516" },
+  { nombre: "V120", codigo: "120120" },
+  { nombre: "HIELERA CH", codigo: "7501431206038" },
+  { nombre: "HIELERA MED", codigo: "7501825638728" },
+  { nombre: "HIELERA GRAD", codigo: "7501825638742" },
+  { nombre: "HIELERA AUTOESTI C/5", codigo: "" },
+  { nombre: "TORTILLERO", codigo: "020103" },
+  { nombre: "CH855", codigo: "5283" },
+  { nombre: "CH066", codigo: "5282" }
 ];
 
 const listaTemporal = [];
