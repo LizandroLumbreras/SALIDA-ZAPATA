@@ -168,11 +168,45 @@
 <body>
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
 <div id="pantalla1" class="pantalla visible">
-  <h2>Registrar salida - Datos generales</h2>
+  <h2>Registrar salida - Zapata</h2>
   <label>Fecha: <input type="date" id="fecha"></label><br><br>
-  <label>Entrega: <input type="text" id="entrega"></label><br><br>
-  <label>Recibe: <input type="text" id="recibe"></label><br><br>
-  <label>Destino: <input type="text" id="destino"></label><br><br>
+<label for="entrega">Entrega:</label>
+<select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona quien entrega</option>
+  <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
+  <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
+</select><br>
+
+<label for="recibe">Recibe:</label>
+<select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona quien recibe</option>
+  <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
+  <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
+  <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
+  <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
+  <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
+</select><br>
+
+<label for="destino">Destino:</label>
+<select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona destino</option>
+      <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
+      <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
+      <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
+      <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
+      <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
+      <option value="ROBERTO YADO">ROBERTO YADO</option>
+      <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
+      <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
+      <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
+      <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
+      <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
+      <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
+      <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
+      <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
+    </select>
+</select><br>
+
   <button class="boton-accion" onclick="validarDatosGenerales()">Continuar</button>
 </div>
 
