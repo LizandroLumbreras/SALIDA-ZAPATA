@@ -301,8 +301,9 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 async function mostrarProximoFolio() {
-  document.getElementById("loaderFolio").style.display = "block";
-  document.getElementById("pantalla1").style.display = "none";
+  <div id="folio-generado" style="display: none; margin-top: 10px;">
+  <p style="color:white;">Folio generado: <span id="folio"></span></p>
+</div>
 
   const docRef = db.collection("consecutivos").doc("salidas_zapata");
   const docSnap = await docRef.get();
@@ -316,7 +317,6 @@ async function mostrarProximoFolio() {
 
   setTimeout(() => {
     document.getElementById("loaderFolio").style.display = "none";
-    document.getElementById("pantalla1").style.display = "block";
   }, 300);
 }
 
