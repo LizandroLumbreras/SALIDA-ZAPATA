@@ -5,6 +5,17 @@
   <title>Salida de Inventario - Almacén Zapata</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    input[type="date"],
+input[type="text"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  box-sizing: border-box;
+}
     .pantalla {
   display: none !important;
   opacity: 0;
@@ -194,26 +205,29 @@
 <div id="pantalla1" class="pantalla visible">
   <h2>Registrar salida - Zapata</h2>
   <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
- <label>Fecha: <input type="date" id="fecha" readonly></label>
+<label>Fecha:
+  <input type="date" id="fecha" class="form-control" readonly>
+</label>
+
 <label for="entrega">Entrega:</label>
-<select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+<select id="entrega" required class="form-control">
   <option value="">Selecciona quien entrega</option>
   <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
   <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
-</select><br>
+</select>
 
 <label for="recibe">Recibe:</label>
-<select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+<select id="recibe" required class="form-control">
   <option value="">Selecciona quien recibe</option>
   <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
   <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
   <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
   <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
   <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
-</select><br>
+</select>
 
 <label for="destino">Destino:</label>
-<select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+<select id="destino" required class="form-control">
   <option value="">Selecciona destino</option>
       <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
       <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
