@@ -293,7 +293,7 @@
     ul.appendChild(li);
   });
 
-  irAPantalla('pantalla5');
+  irAPantalla('pantalla6');
 }
 
   // Configuración de tu proyecto Firebase
@@ -372,8 +372,9 @@ function confirmarCantidad() {
   const cantidad = parseInt(document.getElementById("inputCantidad").value);
   if (!isNaN(cantidad) && cantidad > 0) {
     listaTemporal.push({ ...productoSeleccionado, cantidad });
-    actualizarListaTemporal();
-    cerrarPopup();
+   cerrarPopup();
+actualizarListaEditable();
+irAPantalla('pantalla5');
   } else {
     alert("Ingresa una cantidad válida.");
   }
@@ -791,6 +792,37 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
 
   mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
+  }); // ← aquí faltaba cerrar correctamente
+  function actualizarListaEditable() {
+  const ul = document.getElementById("listaEditable");
+  ul.innerHTML = "";
+  listaTemporal.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: black;">
+        <strong>${item.nombre}</strong> (Código: ${item.codigo})<br>
+        Cantidad: 
+        <input type="number" min="1" value="${item.cantidad}" onchange="cambiarCantidad(${index}, this.value)" style="width: 60px; padding: 4px; margin-left: 5px;">
+        <button onclick="eliminarProducto(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:5px; margin-left:10px;">Eliminar</button>
+      </div>
+    `;
+    ul.appendChild(li);
+  });
+}
+
+function cambiarCantidad(index, nuevaCantidad) {
+  const cantidad = parseInt(nuevaCantidad);
+  if (!isNaN(cantidad) && cantidad > 0) {
+    listaTemporal[index].cantidad = cantidad;
+  }
+}
+
+function eliminarProducto(index) {
+  if (confirm("¿Eliminar este producto?")) {
+    listaTemporal.splice(index, 1);
+    actualizarListaEditable();
+  }
+}
 });
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
@@ -804,6 +836,12 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 </div> <!-- ← AQUÍ faltaba este cierre -->
   <div id="pantalla5" class="pantalla">
+  <h2>🧾 Lista de productos agregados</h2>
+  <ul id="listaEditable"></ul>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
+  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
+</div>
+  <div id="pantalla6" class="pantalla">
   <h2>Resumen de Salida</h2>
   <div style="background:white; color:black; padding: 20px; border-radius: 10px;">
     <p><strong>Fecha:</strong> <span id="resumenFecha"></span></p>
@@ -815,8 +853,8 @@ document.addEventListener("DOMContentLoaded", function() {
     <ul id="resumenProductos"></ul>
   </div>
   <br>
-  <button class="boton-accion" onclick="irAPantalla('pantalla4')">🔙 Regresar</button>
- <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla5')">🔙 Regresar</button>
+  <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
