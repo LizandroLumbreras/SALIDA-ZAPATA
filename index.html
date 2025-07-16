@@ -179,37 +179,609 @@
   100% { transform: rotate(360deg); }
 }
 </style>
-
+  
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
 <div id="pantalla1" class="pantalla visible">
   <h2>Registrar salida - Zapata</h2>
   <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
   <label>Fecha: <input type="date" id="fecha"></label><br><br>
-  <label for="fecha">Fecha:</label>
-<input type="date" id="fecha" disabled />
 <label for="entrega">Entrega:</label>
 <select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
   <option value="">Selecciona quien entrega</option>
-@@ -309,7 +310,9 @@
+  <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
+  <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
+</select><br>
+
+<label for="recibe">Recibe:</label>
+<select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona quien recibe</option>
+  <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
+  <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
+  <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
+  <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
+  <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
+</select><br>
+
+<label for="destino">Destino:</label>
+<select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona destino</option>
+      <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
+      <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
+      <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
+      <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
+      <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
+      <option value="ROBERTO YADO">ROBERTO YADO</option>
+      <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
+      <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
+      <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
+      <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
+      <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
+      <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
+      <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
+      <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
+    </select>
+</select><br>
+
+  <button class="boton-accion" onclick="validarDatosGenerales()">Continuar</button>
+</div>
+
+<div id="pantalla2" class="pantalla">
+  <h2>Selecciona una línea</h2>
+  <div class="tarjeta" onclick="mostrarCategorias('REYMA')">REYMA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('BIOPLAST')">BIOPLAST</div>
+  <div class="tarjeta" onclick="mostrarCategorias('JAGUAR')">JAGUAR</div>
+   <div class="tarjeta" onclick="mostrarCategorias('BIGCOLA')">BIG COLA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('CONVERMEX')">CONVERMEX</div>
+</div>
+
+
+<div id="pantalla3" class="pantalla">
+  <h2>Categoría REYMA</h2>
+  <div class="tarjeta" onclick="mostrarProductos('CHAROLA')">CHAROLA</div>
+<div class="tarjeta" onclick="mostrarProductos('CONTENEDOR')">CONTENEDOR</div>
+<div class="tarjeta" onclick="mostrarProductos('PLATOS_TERMICOS')">PLATOS TERMICOS</div>
+<div class="tarjeta" onclick="mostrarProductos('CHAROLAS_COLORES')">CHAROLAS COLORES</div>
+<div class="tarjeta" onclick="mostrarProductos('CONTENEDORES_NEGROS')">CONTENEDORES NEGROS</div>
+<div class="tarjeta" onclick="mostrarProductos('VASOS_PLASTICO')">VASOS PLASTICOS</div>
+  <div class="tarjeta" onclick="mostrarProductos('VASOS_TERMICOS')">VASOS TÉRMICOS</div>
+  <div class="tarjeta" onclick="mostrarProductos('LINEA_EU')">LÍNEA EU (VPP y TP)</div>
+<div class="tarjeta" onclick="mostrarProductos('POPOTE_BIO')">POPOTE BIO REYMA</div>
+  <div class="tarjeta" onclick="mostrarProductos('LINEA_BIO')">LÍNEA BIO REYMA</div>
+
+</div>
+
+<div id="pantalla4" class="pantalla">
+ <h2 id="tituloProductos">Productos</h2>
+  <div id="listaProductos"></div>
+  <h3>🧾 Lista temporal:</h3>
+  <ul id="listaTemporal"></ul>
+  <br>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más artículos</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
+  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  function mostrarResumenFinal() {
+  const fecha = document.getElementById("fecha").value;
+  const entrega = document.getElementById("entrega").value;
+  const recibe = document.getElementById("recibe").value;
+  const destino = document.getElementById("destino").value;
+
+  document.getElementById("resumenFecha").textContent = fecha;
+  document.getElementById("resumenEntrega").textContent = entrega;
+  document.getElementById("resumenRecibe").textContent = recibe;
+  document.getElementById("resumenDestino").textContent = destino;
+
+  const ul = document.getElementById("resumenProductos");
+  ul.innerHTML = "";
+  listaTemporal.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.cantidad} x ${item.nombre} (Código: ${item.codigo})`;
+    ul.appendChild(li);
+  });
+
+  irAPantalla('pantalla5');
+}
+
+  // Configuración de tu proyecto Firebase
+  const firebaseConfig = {
+  apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
+  authDomain: "inventariopv-643f1.firebaseapp.com",
+  projectId: "inventariopv-643f1",
+  storageBucket: "inventariopv-643f1.firebasestorage.app",
+  messagingSenderId: "96242533231",
+  appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
+};
+  // Inicializar Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+async function mostrarProximoFolio() {
+  document.getElementById("loaderFolio").style.display = "block";
+  document.getElementById("pantalla1").style.display = "none";
+
+  const docRef = db.collection("consecutivos").doc("salidas_zapata");
+  const docSnap = await docRef.get();
+
+  let numero = 1;
   if (docSnap.exists) {
     numero = docSnap.data().ultimo || 1;
   }
 
-  window.onload = function () {
-  actualizarFecha();
-};
   const proximo = "PDDZAP - " + String(numero).padStart(4, "0");
   document.getElementById("proximoFolio").textContent = proximo;
 
-@@ -782,34 +785,39 @@
+  setTimeout(() => {
+    document.getElementById("loaderFolio").style.display = "none";
+    document.getElementById("pantalla1").style.display = "block";
+  }, 300);
+}
+
+  async function obtenerFolioConsecutivo() {
+  const docRef = db.collection("consecutivos").doc("salidas_zapata");
+  const docSnap = await docRef.get();
+
+  let nuevoFolio = 1;
+
+  if (docSnap.exists) {
+    const ultimo = docSnap.data().ultimo || 0;
+    nuevoFolio = ultimo + 1;
+    await docRef.set({ ultimo: nuevoFolio });
+  } else {
+    await docRef.set({ ultimo: nuevoFolio });
+  }
+
+  return nuevoFolio;
+}
+  function validarDatosGenerales() {
+  const fecha = document.getElementById("fecha").value.trim();
+  const entrega = document.getElementById("entrega").value.trim();
+  const recibe = document.getElementById("recibe").value.trim();
+  const destino = document.getElementById("destino").value.trim();
+
+  if (!fecha || !entrega || !recibe || !destino) {
+    alert("Por favor completa todos los campos antes de continuar.");
+    return;
+  }
+
+  irAPantalla('pantalla2');
+}
+
+  let productoSeleccionado = null;
+
+function agregarCantidad(nombre, codigo) {
+  productoSeleccionado = { nombre, codigo };
+  document.getElementById("nombreProductoSeleccionado").textContent = nombre;
+  document.getElementById("inputCantidad").value = "";
+  document.getElementById("popupCantidad").style.display = "block";
+}
+
+function confirmarCantidad() {
+  const cantidad = parseInt(document.getElementById("inputCantidad").value);
+  if (!isNaN(cantidad) && cantidad > 0) {
+    listaTemporal.push({ ...productoSeleccionado, cantidad });
+    actualizarListaTemporal();
+    cerrarPopup();
+  } else {
+    alert("Ingresa una cantidad válida.");
+  }
+}
+
+function cerrarPopup() {
+  document.getElementById("popupCantidad").style.display = "none";
+}
+  function mostrarCategorias(marca) {
+  const pantalla3 = document.getElementById("pantalla3");
+  pantalla3.innerHTML = `<h2>Categoría ${marca}</h2>`;
+
+  let categorias = [];
+
+  if (marca === 'REYMA') {
+  categorias = [
+    { nombre: "CHAROLA", tipo: 'CHAROLA' },
+    { nombre: "CONTENEDOR", tipo: 'CONTENEDOR' },
+    { nombre: "PLATOS TERMICOS", tipo: 'PLATOS_TERMICOS' },
+    { nombre: "CHAROLAS COLORES", tipo: 'CHAROLAS_COLORES' },
+    { nombre: "CONTENEDORES NEGROS", tipo: 'CONTENEDORES_NEGROS' },
+    { nombre: "VASOS PLASTICOS", tipo: 'VASOS_PLASTICO' },
+    { nombre: "VASOS TÉRMICOS", tipo: 'VASOS_TERMICOS' },
+    { nombre: "LÍNEA EU (VPP y TP)", tipo: 'LINEA_EU' },
+    { nombre: "POPOTE BIO REYMA", tipo: 'POPOTE_BIO' },
+    { nombre: "LÍNEA BIO REYMA", tipo: 'LINEA_BIO' }
+  ];
+} else if (marca === 'BIOPLAST') {
+  categorias = [
+    { nombre: "Contenedores BIOPLAST", tipo: 'BIOPLAST_CONTENEDORES' },
+    { nombre: "Charolas BIOPLAST", tipo: 'BIOPLAST_CHAROLAS' }
+  ];
+}
+    else if (marca === 'JAGUAR') {
+  categorias = [
+    { nombre: "Productos JAGUAR", tipo: 'JAGUAR_GENERAL' }
+  ];
+}
+    else if (marca === 'BIGCOLA') {
+  categorias = [
+    { nombre: "Productos BIG COLA", tipo: 'BIGCOLA_GENERAL' }
+  ];
+}
+    else if (marca === 'CONVERMEX') {
+  categorias = [
+    { nombre: "Productos CONVERMEX", tipo: 'CONVERMEX_GENERAL' }
+  ];
+}
+
+
+  categorias.forEach(cat => {
+    const div = document.createElement("div");
+    div.className = "tarjeta";
+    div.onclick = () => mostrarProductos(cat.tipo);
+    div.textContent = cat.nombre;
+    pantalla3.appendChild(div);
+  });
+
+  irAPantalla('pantalla3');
+}
+  function mostrarProductos(tipo) {
+  let productos = [];
+  let titulo = "Productos";
+
+  if (tipo === 'CHAROLA') {
+    productos = productosCharola;
+    titulo = "Productos REYMA - CHAROLA";
+  } else if (tipo === 'CONTENEDOR') {
+    productos = productosContenedor;
+    titulo = "Productos REYMA - CONTENEDOR";
+  } else if (tipo === 'PLATOS_TERMICOS') {
+    productos = productosPlatosTermicos;
+    titulo = "Productos REYMA - PLATOS TERMICOS";
+  } else if (tipo === 'CHAROLAS_COLORES') {
+    productos = productosCharolasColores;
+    titulo = "Productos REYMA - CHAROLAS COLORES";
+  } else if (tipo === 'CONTENEDORES_NEGROS') {
+    productos = productosContenedoresNegros;
+    titulo = "Productos REYMA - CONTENEDORES NEGROS";
+  } else if (tipo === 'VASOS_PLASTICO') {
+    productos = productosVasosPlastico;
+    titulo = "Productos REYMA - VASOS PLASTICOS";
+  }
+else if (tipo === 'VASOS_TERMICOS') {
+  productos = productosVasosTermicos;
+  titulo = "Productos REYMA - VASOS TÉRMICOS";
+}
+    else if (tipo === 'LINEA_EU') {
+  productos = productosLineaEU;
+  titulo = "Productos REYMA - LÍNEA EU (VPP y TP)";
+}
+    else if (tipo === 'POPOTE_BIO') {
+  productos = productosPopoteBio;
+  titulo = "Productos REYMA - POPOTE BIO";
+}
+    else if (tipo === 'LINEA_BIO') {
+  productos = productosLineaBio;
+  titulo = "Productos REYMA - LÍNEA BIO";
+}
+    else if (tipo === 'BIOPLAST_CONTENEDORES') {
+  productos = productosBioplastContenedores;
+  titulo = "BIOPLAST - Contenedores";
+} else if (tipo === 'BIOPLAST_CHAROLAS') {
+  productos = productosBioplastCharolas;
+  titulo = "BIOPLAST - Charolas";
+}
+else if (tipo === 'JAGUAR_GENERAL') {
+  productos = productosJaguarGeneral;
+  titulo = "Productos JAGUAR";
+}
+    else if (tipo === 'BIGCOLA_GENERAL') {
+  productos = productosBigColaGeneral;
+  titulo = "Productos BIG COLA";
+}
+    else if (tipo === 'CONVERMEX_GENERAL') {
+  productos = productosConvermexGeneral;
+  titulo = "Productos CONVERMEX";
+}
+
+  document.getElementById("tituloProductos").textContent = titulo;
+  const contenedor = document.getElementById("listaProductos");
+  contenedor.innerHTML = "";
+
+  productos.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `<span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>`;
+
+    contenedor.appendChild(div);
+  });
+
+  irAPantalla('pantalla4');
+}
+const productosCharola = [
+  { nombre: "CH855RE", codigo: "365" },
+  { nombre: "CH066RE", codigo: "355" },
+  { nombre: "CH007", codigo: "357" },
+  { nombre: "CH835", codigo: "364" },
+  { nombre: "CH105", codigo: "363" },
+  { nombre: "CH1014", codigo: "7037" },
+  { nombre: "CH9H", codigo: "2178" },
+  { nombre: "CH8S", codigo: "14578" },
+  { nombre: "CH855MA", codigo: "7016" },
+  { nombre: "CH066MA", codigo: "7221" }
+];
+const productosContenedor = [
+  { nombre: "CN7X7D4P", codigo: "7689" },
+  { nombre: "CN7X7L4P", codigo: "7686" },
+  { nombre: "CN8X8D4P", codigo: "2096" },
+  { nombre: "CN8X8L4P", codigo: "1886" },
+  { nombre: "CN9X9D4P", codigo: "2097" },
+  { nombre: "CN9X9L4P", codigo: "1655" },
+  { nombre: "CNH10P (HAM)", codigo: "1901" },
+  { nombre: "CNHD (HOT DOG)", codigo: "7417" },
+  { nombre: "CNHO (HOGIE)", codigo: "352" }
+];
+
+const productosPlatosTermicos = [
+  { nombre: "PH4", codigo: "12146" },
+  { nombre: "PH6", codigo: "2409" },
+  { nombre: "PH8", codigo: "2410" },
+  { nombre: "PH10", codigo: "020013" },
+  { nombre: "PT006", codigo: "2411" },
+  { nombre: "PT9D", codigo: "2188" },
+  { nombre: "PT8D", codigo: "2408" },
+  { nombre: "PT8L", codigo: "2190" },
+  { nombre: "PT10D", codigo: "3987" },
+  { nombre: "PT10L", codigo: "3614" }
+];
+
+const productosCharolasColores = [
+  { nombre: "CH855AM", codigo: "1347" },
+  { nombre: "CH855NE", codigo: "020124" },
+  { nombre: "CH855RS", codigo: "020126" },
+  { nombre: "CH855AZUL", codigo: "020127" },
+  { nombre: "CH855RJ", codigo: "020053" },
+  { nombre: "CH007AZUL", codigo: "2351" },
+  { nombre: "CH007AM", codigo: "1349" },
+  { nombre: "CH007NE", codigo: "055500500" },
+  { nombre: "CH007RS", codigo: "2350" },
+  { nombre: "CH007RJ", codigo: "450029" },
+  { nombre: "CH9HAM", codigo: "3864" },
+  { nombre: "CH9HNE", codigo: "3865" },
+  { nombre: "CH9HRS", codigo: "3864" },
+  { nombre: "CH9HAZUL", codigo: "3865" },
+  { nombre: "CH9HRJ", codigo: "3865" },
+  { nombre: "CH066AM", codigo: "3738" },
+  { nombre: "CH8SNEGRA", codigo: "14579" }
+];
+
+const productosContenedoresNegros = [
+  { nombre: "CN7X7LNE", codigo: "020270" },
+  { nombre: "CN7X7DNE", codigo: "020270" },
+  { nombre: "CN8X8DNE", codigo: "450065" },
+  { nombre: "CN8X8LNE", codigo: "450065" },
+  { nombre: "CN9X9DNE", codigo: "750178" },
+  { nombre: "CN9X9LNE", codigo: "750175" },
+  { nombre: "CGHAMNEGRA", codigo: "750182" }
+];
+
+const productosVasosPlastico = [
+  { nombre: "VP4A", codigo: "020167" },
+  { nombre: "VP4CH", codigo: "020262" },
+  { nombre: "VP55A", codigo: "2397" },
+  { nombre: "VP51/2", codigo: "2161" },
+  { nombre: "VP6", codigo: "2162" },
+  { nombre: "VP7", codigo: "5853" },
+  { nombre: "VP8", codigo: "4410" },
+  { nombre: "VP10", codigo: "5078" },
+  { nombre: "VP12", codigo: "1502" },
+  { nombre: "VP14", codigo: "1623" },
+  { nombre: "VP16A", codigo: "4395" },
+  { nombre: "VP16L", codigo: "1386413864" },
+  { nombre: "ENV1LT", codigo: "020066" },
+  { nombre: "ENV1/2LT", codigo: "5666" },
+  { nombre: "ENV1/4LT", codigo: "450083" },
+  { nombre: "TAPA REY (TR) VP", codigo: "020183" }
+];
+  const productosVasosTermicos = [
+  { nombre: "VT4A", codigo: "020073" },
+  { nombre: "VT4CH", codigo: "7562" },
+  { nombre: "VT6", codigo: "450006" },
+  { nombre: "VT8", codigo: "7560" },
+  { nombre: "VT8A", codigo: "450010" },
+  { nombre: "VT10", codigo: "450007" },
+  { nombre: "VT12", codigo: "7011" },
+  { nombre: "VT12A", codigo: "020339" },
+  { nombre: "VT14", codigo: "450008" },
+  { nombre: "VT16", codigo: "7013" },
+  { nombre: "VT1/2LT", codigo: "" },
+  { nombre: "VT1LT", codigo: "" }
+];
+  const productosLineaEU = [
+  { nombre: "VP10EU", codigo: "450091" },
+  { nombre: "VP12EU", codigo: "450090" },
+  { nombre: "VP14EU", codigo: "141450" },
+  { nombre: "VP16EU", codigo: "450086" },
+  { nombre: "VP32EU", codigo: "450087" },
+  { nombre: "TPEUR (RANURA)", codigo: "450101" },
+  { nombre: "TPEU (LISA)", codigo: "450101" },
+  { nombre: "TPDEU (DOMO)", codigo: "450101" },
+  { nombre: "TP32EUR (RANURA)", codigo: "450095" },
+  { nombre: "TP32EU (LISA)", codigo: "450095" },
+  { nombre: "TPD16 EU", codigo: "32322050" }
+];
+  const productosPopoteBio = [
+  { nombre: "ESTUCH 21 BIO 4/500", codigo: "450079" },
+  { nombre: "ESTUCH 26 BIO 4/500", codigo: "450081" }
+];
+  const productosLineaBio = [
+  { nombre: "CH066MABIO", codigo: "020319" },
+  { nombre: "CH855MABIO", codigo: "020318" },
+  { nombre: "CN7X7L4PBIO", codigo: "020297" },
+  { nombre: "CN7X7D4PBIO", codigo: "020306" },
+  { nombre: "CN8X8L4PBIO", codigo: "020303" },
+  { nombre: "CN8X8D4PBIO", codigo: "020300" },
+  { nombre: "CN9X9D4PBIO", codigo: "020312" },
+  { nombre: "CN9X9L4PBIO", codigo: "020310" },
+  { nombre: "CNH10PBIO", codigo: "450089" },
+  { nombre: "CH835BIO", codigo: "" },
+  { nombre: "CH007BIO", codigo: "450100" },
+  { nombre: "CH855REBIO", codigo: "" },
+  { nombre: "CH9HBIO", codigo: "" },
+  { nombre: "PT9DBIO", codigo: "" },
+  { nombre: "PT8LBIO", codigo: "" },
+  { nombre: "PT8DBIO", codigo: "" }
+    ];
+  const productosBioplastContenedores = [
+  { nombre: "CN7X7L4PBIO TINAJITA", codigo: "770110" },
+  { nombre: "CN7X7D4PBIO TINAJITA", codigo: "770210" },
+  { nombre: "CN8X8D4PBIO TINAJITA", codigo: "880210" },
+  { nombre: "CN8X8L4PBIO TINAJITA", codigo: "880110" },
+  { nombre: "CN9X9D4PBIO TINAJITA", codigo: "990210" },
+  { nombre: "CN9X9L4PBIO TINAJITA", codigo: "990110" }
+];
+
+const productosBioplastCharolas = [
+  { nombre: "CH066MABIO TINAJITA CREMA", codigo: "" },
+  { nombre: "CH855MABIO TINAJITA CREMA", codigo: "" },
+  { nombre: "CH066MABIO TINAJITA BLANCA", codigo: "" },
+  { nombre: "CH855MABIO TINAJITA BLANCA", codigo: "" }
+];
+const productosJaguarGeneral = [
+  { nombre: "PT 9D", codigo: "020051" },
+  { nombre: "PT 8L", codigo: "020054" },
+  { nombre: "CH855", codigo: "2033" },
+  { nombre: "CH066", codigo: "2164" },
+  { nombre: "PT 6 PASTELERO", codigo: "020053" },
+  { nombre: "VP10", codigo: "1484" },
+  { nombre: "VP 5 1/2", codigo: "2161" },
+  { nombre: "VP 8", codigo: "1639" },
+  { nombre: "VP 6", codigo: "2162" },
+  { nombre: "PT PH6", codigo: "020051" },
+  { nombre: "PT PH8", codigo: "020052" },
+  { nombre: "PT 8 DIV", codigo: "020055" },
+  { nombre: "JUGUERO MEDIO", codigo: "1356" },
+  { nombre: "JUGUERO 1L", codigo: "1355" },
+  { nombre: "TAP P/ENV JUGUERO", codigo: "290005" },
+  { nombre: "PH 8", codigo: "020052" },
+  { nombre: "VP 12", codigo: "1409" },
+  { nombre: "VP 16B", codigo: "1486" },
+  { nombre: "VP 14", codigo: "1485" },
+  { nombre: "VP 16ALT", codigo: "450053" },
+  { nombre: "PT10 1/4 DIV", codigo: "450002" }
+];
+  const productosBigColaGeneral = [
+  { nombre: "BIG COLA 3 LITROS", codigo: "060028" },
+  { nombre: "BIG COLA 1.5", codigo: "4451" },
+  { nombre: "BIG COLA 500 ML", codigo: "250010" },
+  { nombre: "CIFRUT 3.3", codigo: "7506241" },
+  { nombre: "CIFRUT 625", codigo: "210010" },
+  { nombre: "CIFRUT 300", codigo: "7503033" },
+  { nombre: "BIG COLA 300", codigo: "14220" },
+  { nombre: "SPORADE 625", codigo: "060015" },
+  { nombre: "STAR COLA 355", codigo: "060007" },
+  { nombre: "STAR LIMA 355", codigo: "060007" },
+  { nombre: "STAR NARANJA 355", codigo: "060007" },
+  { nombre: "CHECHI FRESCO 140 ML", codigo: "210004" },
+  { nombre: "AGUA 500 ML", codigo: "3062" },
+  { nombre: "AGUA 1.5", codigo: "2382" },
+  { nombre: "AGUA 1 L", codigo: "3217" },
+  { nombre: "STAR SURTIDA", codigo: "060007" }
+];
+const productosConvermexGeneral = [
+  { nombre: "V104", codigo: "104104" },
+  { nombre: "V106", codigo: "106106" },
+  { nombre: "V108", codigo: "108108" },
+  { nombre: "V110", codigo: "110110" },
+  { nombre: "V112", codigo: "112112" },
+  { nombre: "V114", codigo: "114114" },
+  { nombre: "V116", codigo: "116116" },
+  { nombre: "V132", codigo: "132132" },
+  { nombre: "ENV704", codigo: "704704" },
+  { nombre: "ENV706", codigo: "706706" },
+  { nombre: "ENV708", codigo: "708708" },
+  { nombre: "ENV712", codigo: "712712" },
+  { nombre: "ENV716", codigo: "716716" },
+  { nombre: "ENV732", codigo: "732732" },
+  { nombre: "ENV760", codigo: "760760" },
+  { nombre: "TP404", codigo: "404404" },
+  { nombre: "TP406", codigo: "406406" },
+  { nombre: "TP408", codigo: "408408" },
+  { nombre: "TP410", codigo: "410410" },
+  { nombre: "TP412", codigo: "412412" },
+  { nombre: "TP414", codigo: "414414" },
+  { nombre: "TP416", codigo: "416416" },
+  { nombre: "TP516", codigo: "516516" },
+  { nombre: "V120", codigo: "120120" },
+  { nombre: "HIELERA CH", codigo: "7501431206038" },
+  { nombre: "HIELERA MED", codigo: "7501825638728" },
+  { nombre: "HIELERA GRAD", codigo: "7501825638742" },
+  { nombre: "HIELERA AUTOESTI C/5", codigo: "" },
+  { nombre: "TORTILLERO", codigo: "020103" },
+  { nombre: "CH855", codigo: "5283" },
+  { nombre: "CH066", codigo: "5282" }
+];
+
+const listaTemporal = [];
+
+function irAPantalla(id) {
+  document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+
+}
+
+function actualizarListaTemporal() {
+  const ul = document.getElementById("listaTemporal");
+  ul.innerHTML = "";
+  listaTemporal.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.cantidad} x ${item.nombre} (codigo ${item.codigo})`;
+    ul.appendChild(li);
+  });
+}
+async function finalizarCaptura() {
+  if (listaTemporal.length === 0) {
+    alert("No hay productos agregados.");
+    return;
+  }
+
+  const fecha = document.getElementById("fecha").value;
+  const entrega = document.getElementById("entrega").value;
+  const recibe = document.getElementById("recibe").value;
+  const destino = document.getElementById("destino").value;
+
+  const folio = await obtenerFolioConsecutivo();
+
+  const salidaData = {
+    folio,
+    fecha,
+    entrega,
+    recibe,
+    destino,
+    productos: listaTemporal,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try {
+    await db.collection("almacenes/almacen_zapata/salidas").add(salidaData);
+    alert(`✅ Salida guardada con folio ${folio}`);
+    console.log("Salida:", salidaData);
+    // limpiar datos si quieres
+    location.reload(); 
+  } catch (error) {
+    console.error("Error al guardar:", error);
+    alert("❌ Ocurrió un error al guardar la salida.");
+  }
+}
+  // Establecer fecha actual en el campo
+document.addEventListener("DOMContentLoaded", function() {
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+  document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
 
   mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
 });
-  function actualizarFecha() {
-  const hoy = new Date();
-  const fechaFormateada = hoy.toISOString().split("T")[0]; // yyyy-mm-dd
-  document.getElementById("fecha").value = fechaFormateada;
-}
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
