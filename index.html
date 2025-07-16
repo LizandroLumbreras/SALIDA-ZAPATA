@@ -166,9 +166,24 @@
   </style>
 </head>
 <body>
+<div id="loaderFolio" style="text-align:center; display:none;">
+  <div style="margin-top:20px;">
+    <div class="spinner" style="margin:auto; width:40px; height:40px; border:4px solid #ccc; border-top:4px solid #d32f2f; border-radius:50%; animation:spin 1s linear infinite;"></div>
+    <div style="color:white; font-weight:bold;">Cargando folio...</div>
+  </div>
+</div>
+
+<style>
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+  
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
 <div id="pantalla1" class="pantalla visible">
   <h2>Registrar salida - Zapata</h2>
+  <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
   <label>Fecha: <input type="date" id="fecha"></label><br><br>
 <label for="entrega">Entrega:</label>
 <select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
@@ -243,7 +258,6 @@
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más artículos</button>
   <button class="boton-accion" onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
-  <button class="boton-accion" onclick="finalizarCaptura()">✅ Finalizar y guardar</button>
   <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -284,6 +298,26 @@
   // Inicializar Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+async function mostrarProximoFolio() {
+  document.getElementById("loaderFolio").style.display = "block";
+  document.getElementById("pantalla1").style.display = "none";
+
+  const docRef = db.collection("consecutivos").doc("salidas_zapata");
+  const docSnap = await docRef.get();
+
+  let numero = 1;
+  if (docSnap.exists) {
+    numero = docSnap.data().ultimo || 1;
+  }
+
+  const proximo = "PDDZAP - " + String(numero).padStart(4, "0");
+  document.getElementById("proximoFolio").textContent = proximo;
+
+  setTimeout(() => {
+    document.getElementById("loaderFolio").style.display = "none";
+    document.getElementById("pantalla1").style.display = "block";
+  }, 300);
+}
 
   async function obtenerFolioConsecutivo() {
   const docRef = db.collection("consecutivos").doc("salidas_zapata");
@@ -745,6 +779,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
   const dd = String(hoy.getDate()).padStart(2, '0');
   document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
+
+  mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
 });
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
