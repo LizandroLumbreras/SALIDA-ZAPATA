@@ -181,49 +181,50 @@
 </style>
   
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
-<div id="pantalla1" class="pantalla visible">
-  <h2>Registrar salida - Zapata</h2>
-  <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
+<div id="pantallaPaso1" style="max-width: 500px; margin: auto; padding: 2rem; background: rgba(255,255,255,0.8); border-radius: 10px; box-shadow: 0 0 10px #ccc;">
+  <h2 style="text-align:center;">Registrar salida - Zapata</h2>
+  <p style="text-align:center;">📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
+
   <label for="fecha">Fecha:</label>
-<input type="date" id="fecha" disabled />
-<label for="entrega">Entrega:</label>
-<select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-  <option value="">Selecciona quien entrega</option>
-  <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
-  <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
-</select><br>
+  <input type="date" id="fecha" disabled style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
 
-<label for="recibe">Recibe:</label>
-<select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-  <option value="">Selecciona quien recibe</option>
-  <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
-  <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
-  <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
-  <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
-  <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
-</select><br>
+  <label for="entrega">Entrega:</label>
+  <select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+    <option value="">Selecciona quien entrega</option>
+    <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
+    <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
+  </select>
 
-<label for="destino">Destino:</label>
-<select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-  <option value="">Selecciona destino</option>
-      <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
-      <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
-      <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
-      <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
-      <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
-      <option value="ROBERTO YADO">ROBERTO YADO</option>
-      <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
-      <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
-      <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
-      <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
-      <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
-      <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
-      <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
-      <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
-    </select>
-</select><br>
+  <label for="recibe">Recibe:</label>
+  <select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+    <option value="">Selecciona quien recibe</option>
+    <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
+    <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
+    <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
+    <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
+    <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
+  </select>
 
-  <button class="boton-accion" onclick="validarDatosGenerales()">Continuar</button>
+  <label for="destino">Destino:</label>
+  <select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+    <option value="">Selecciona destino</option>
+    <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
+    <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
+    <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
+    <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
+    <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
+    <option value="ROBERTO YADO">ROBERTO YADO</option>
+    <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
+    <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
+    <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
+    <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
+    <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
+    <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
+    <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
+    <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
+  </select>
+
+  <button class="boton-accion" style="width: 100%; padding: 10px; font-size: 16px; background: #d32f2f; color: white; border: none; border-radius: 6px; cursor: pointer;" onclick="validarDatosGenerales()">Continuar</button>
 </div>
 
 <div id="pantalla2" class="pantalla">
@@ -790,6 +791,21 @@ document.addEventListener("DOMContentLoaded", function() {
   const fechaFormateada = hoy.toISOString().split("T")[0]; // yyyy-mm-dd
   document.getElementById("fecha").value = fechaFormateada;
 }
+
+  function validarDatosGenerales() {
+    const entrega = document.getElementById("entrega").value;
+    const recibe = document.getElementById("recibe").value;
+    const destino = document.getElementById("destino").value;
+
+    if (!entrega || !recibe || !destino) {
+      alert("Por favor completa todos los campos antes de continuar.");
+      return;
+    }
+
+    // Oculta pantalla 1 y muestra pantalla 2
+    document.getElementById("pantallaPaso1").style.display = "none";
+    document.getElementById("pantallaPaso2").style.display = "block";
+  }
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
