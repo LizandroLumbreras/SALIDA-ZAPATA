@@ -206,7 +206,8 @@ select {
   <h2>Registrar salida - Zapata</h2>
   <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
 <label>Fecha:
-  <input type="date" id="fecha" class="form-control" readonly>
+  <span id="fechaVisual" style="display: block; background: #eee; padding: 10px; border-radius: 6px;"></span>
+  <input type="hidden" id="fecha" name="fecha">
 </label>
 
 <label for="entrega">Entrega:</label>
@@ -803,9 +804,11 @@ document.addEventListener("DOMContentLoaded", function() {
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
   const dd = String(hoy.getDate()).padStart(2, '0');
-  document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
+  const fechaHoy = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("fecha").value = fechaHoy;
+  document.getElementById("fechaVisual").textContent = fechaHoy;
 
-  mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
+  mostrarProximoFolio();
 });
   function actualizarListaEditable() {
   const ul = document.getElementById("listaEditable");
