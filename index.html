@@ -417,8 +417,7 @@ function cerrarPopup() {
 }
   function mostrarCategorias(marca) {
   const pantalla3 = document.getElementById("pantalla3");
-  pantalla3.innerHTML = <h2>Categoría ${marca}</h2>;
-
+ pantalla3.innerHTML = `<h2>Categoría ${marca}</h2>`;  // ✅
   let categorias = [];
 
   if (marca === 'REYMA') {
@@ -533,8 +532,7 @@ else if (tipo === 'JAGUAR_GENERAL') {
   productos.forEach(p => {
     const div = document.createElement("div");
     div.className = "producto";
-    div.innerHTML = <span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>;
-
+    div.innerHTML = `<span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>`; // ✅
     contenedor.appendChild(div);
   });
 
@@ -777,7 +775,7 @@ function actualizarListaTemporal() {
   ul.innerHTML = "";
   listaTemporal.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = ${item.cantidad} x ${item.nombre} (codigo ${item.codigo});
+    li.textContent = `${item.cantidad} x ${item.nombre} (Código: ${item.codigo})`;
     ul.appendChild(li);
   });
 }
