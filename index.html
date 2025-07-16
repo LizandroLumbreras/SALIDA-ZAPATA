@@ -5,6 +5,16 @@
   <title>Salida de Inventario - Almacén Zapata</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    .pantalla {
+  display: none !important;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.pantalla.visible {
+  display: block !important;
+  opacity: 1;
+}
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to right, #00416A, #E4E5E6);
@@ -179,52 +189,50 @@
   100% { transform: rotate(360deg); }
 }
 </style>
-
+  
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
-<div id="pantallaPaso1" style="max-width: 500px; margin: auto; padding: 2rem; background: rgba(255,255,255,0.8); border-radius: 10px; box-shadow: 0 0 10px #ccc;">
-  <h2 style="text-align:center;">Registrar salida - Zapata</h2>
-  <p style="text-align:center;">📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
+<div id="pantalla1" class="pantalla visible">
+  <h2>Registrar salida - Zapata</h2>
+  <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
+ <label>Fecha: <input type="date" id="fecha" readonly></label>
+<label for="entrega">Entrega:</label>
+<select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona quien entrega</option>
+  <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
+  <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
+</select><br>
 
-  <label for="fecha">Fecha:</label>
-  <input type="date" id="fecha" disabled style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+<label for="recibe">Recibe:</label>
+<select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona quien recibe</option>
+  <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
+  <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
+  <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
+  <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
+  <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
+</select><br>
 
-  <label for="entrega">Entrega:</label>
-  <select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-    <option value="">Selecciona quien entrega</option>
-    <option value="Jose Maria (Chema)">Jose Maria (Chema)</option>
-    <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
-  </select>
+<label for="destino">Destino:</label>
+<select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
+  <option value="">Selecciona destino</option>
+      <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
+      <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
+      <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
+      <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
+      <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
+      <option value="ROBERTO YADO">ROBERTO YADO</option>
+      <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
+      <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
+      <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
+      <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
+      <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
+      <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
+      <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
+      <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
+    </select>
+</select><br>
 
-  <label for="recibe">Recibe:</label>
-  <select id="recibe" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-    <option value="">Selecciona quien recibe</option>
-    <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
-    <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
-    <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
-    <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
-    <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
-  </select>
-
-  <label for="destino">Destino:</label>
-  <select id="destino" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
-    <option value="">Selecciona destino</option>
-    <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
-    <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
-    <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
-    <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
-    <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
-    <option value="ROBERTO YADO">ROBERTO YADO</option>
-    <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
-    <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
-    <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
-    <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
-    <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
-    <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
-    <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
-    <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
-  </select>
-
-  <button class="boton-accion" style="width: 100%; padding: 10px; font-size: 16px; background: #d32f2f; color: white; border: none; border-radius: 6px; cursor: pointer;" onclick="validarDatosGenerales()">Continuar</button>
+  <button class="boton-accion" onclick="validarDatosGenerales()">Continuar</button>
 </div>
 
 <div id="pantalla2" class="pantalla">
@@ -281,7 +289,7 @@
   ul.innerHTML = "";
   listaTemporal.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = `${item.cantidad} x ${item.nombre} (Código: ${item.codigo})`;
+    li.textContent = ${item.cantidad} x ${item.nombre} (Código: ${item.codigo});
     ul.appendChild(li);
   });
 
@@ -303,9 +311,6 @@
 async function mostrarProximoFolio() {
   document.getElementById("loaderFolio").style.display = "block";
   document.getElementById("pantalla1").style.display = "none";
-  <div id="folio-generado" style="display: none; margin-top: 10px;">
-  <p style="color:white;">Folio generado: <span id="folio"></span></p>
-</div>
 
   const docRef = db.collection("consecutivos").doc("salidas_zapata");
   const docSnap = await docRef.get();
@@ -314,6 +319,7 @@ async function mostrarProximoFolio() {
   if (docSnap.exists) {
     numero = docSnap.data().ultimo || 1;
   }
+
   const proximo = "PDDZAP - " + String(numero).padStart(4, "0");
   document.getElementById("proximoFolio").textContent = proximo;
 
@@ -378,7 +384,7 @@ function cerrarPopup() {
 }
   function mostrarCategorias(marca) {
   const pantalla3 = document.getElementById("pantalla3");
-  pantalla3.innerHTML = `<h2>Categoría ${marca}</h2>`;
+  pantalla3.innerHTML = <h2>Categoría ${marca}</h2>;
 
   let categorias = [];
 
@@ -494,7 +500,7 @@ else if (tipo === 'JAGUAR_GENERAL') {
   productos.forEach(p => {
     const div = document.createElement("div");
     div.className = "producto";
-    div.innerHTML = `<span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>`;
+    div.innerHTML = <span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>;
 
     contenedor.appendChild(div);
   });
@@ -738,7 +744,7 @@ function actualizarListaTemporal() {
   ul.innerHTML = "";
   listaTemporal.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = `${item.cantidad} x ${item.nombre} (codigo ${item.codigo})`;
+    li.textContent = ${item.cantidad} x ${item.nombre} (codigo ${item.codigo});
     ul.appendChild(li);
   });
 }
@@ -767,7 +773,7 @@ async function finalizarCaptura() {
 
   try {
     await db.collection("almacenes/almacen_zapata/salidas").add(salidaData);
-    alert(`✅ Salida guardada con folio ${folio}`);
+    alert(✅ Salida guardada con folio ${folio});
     console.log("Salida:", salidaData);
     // limpiar datos si quieres
     location.reload(); 
@@ -782,30 +788,10 @@ document.addEventListener("DOMContentLoaded", function() {
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
   const dd = String(hoy.getDate()).padStart(2, '0');
-  document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("fecha").value = ${yyyy}-${mm}-${dd};
 
-  mostrarProximoFolio(); // 👈 esta línea es esencial
+  mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
 });
-  function actualizarFecha() {
-  const hoy = new Date();
-  const fechaFormateada = hoy.toISOString().split("T")[0]; // yyyy-mm-dd
-  document.getElementById("fecha").value = fechaFormateada;
-}
-
-  function validarDatosGenerales() {
-    const entrega = document.getElementById("entrega").value;
-    const recibe = document.getElementById("recibe").value;
-    const destino = document.getElementById("destino").value;
-
-    if (!entrega || !recibe || !destino) {
-      alert("Por favor completa todos los campos antes de continuar.");
-      return;
-    }
-
-    // Oculta pantalla 1 y muestra pantalla 2
-    document.getElementById("pantallaPaso1").style.display = "none";
-    document.getElementById("pantallaPaso2").style.display = "block";
-  }
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
@@ -834,6 +820,6 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
-  © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por lisandro el celoso
+  © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por Adm Sistemas
 </footer>
 </html>
