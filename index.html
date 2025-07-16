@@ -274,6 +274,38 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
+  function mostrarListaEditable() {
+  const contenedor = document.getElementById("listaEditable");
+  contenedor.innerHTML = "";
+
+  listaTemporal.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "producto";
+    div.innerHTML = `
+      <span>${item.cantidad} x ${item.nombre} (Código: ${item.codigo})</span>
+      <span onclick="editarCantidad(${index})">✏️</span>
+      <span onclick="eliminarProducto(${index})">🗑️</span>
+    `;
+    contenedor.appendChild(div);
+  });
+
+  irAPantalla("pantalla6");
+}
+
+function editarCantidad(index) {
+  const nuevaCantidad = prompt("Editar cantidad:", listaTemporal[index].cantidad);
+  if (nuevaCantidad !== null && !isNaN(nuevaCantidad) && nuevaCantidad > 0) {
+    listaTemporal[index].cantidad = parseInt(nuevaCantidad);
+    mostrarListaEditable();
+  }
+}
+
+function eliminarProducto(index) {
+  if (confirm("¿Eliminar este producto?")) {
+    listaTemporal.splice(index, 1);
+    mostrarListaEditable();
+  }
+}
   function mostrarResumenFinal() {
   const fecha = document.getElementById("fecha").value;
   const entrega = document.getElementById("entrega").value;
@@ -372,8 +404,9 @@ function confirmarCantidad() {
   const cantidad = parseInt(document.getElementById("inputCantidad").value);
   if (!isNaN(cantidad) && cantidad > 0) {
     listaTemporal.push({ ...productoSeleccionado, cantidad });
-    actualizarListaTemporal();
-    cerrarPopup();
+   actualizarListaTemporal();
+cerrarPopup();
+mostrarListaEditable();
   } else {
     alert("Ingresa una cantidad válida.");
   }
@@ -817,6 +850,13 @@ document.addEventListener("DOMContentLoaded", function() {
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla4')">🔙 Regresar</button>
  <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
+</div>
+  <div id="pantalla6" class="pantalla">
+  <h2>🧾 Lista de Artículos Agregados</h2>
+  <div id="listaEditable"></div>
+  <br>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
+  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
