@@ -289,11 +289,11 @@
   ul.innerHTML = "";
   listaTemporal.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = `${item.cantidad} x ${item.nombre} (Código: ${item.codigo})`;
+    li.textContent = ${item.cantidad} x ${item.nombre} (Código: ${item.codigo});
     ul.appendChild(li);
   });
 
-  irAPantalla('pantalla6');
+  irAPantalla('pantalla5');
 }
 
   // Configuración de tu proyecto Firebase
@@ -372,9 +372,8 @@ function confirmarCantidad() {
   const cantidad = parseInt(document.getElementById("inputCantidad").value);
   if (!isNaN(cantidad) && cantidad > 0) {
     listaTemporal.push({ ...productoSeleccionado, cantidad });
-   cerrarPopup();
-actualizarListaEditable();
-irAPantalla('pantalla5');
+    actualizarListaTemporal();
+    cerrarPopup();
   } else {
     alert("Ingresa una cantidad válida.");
   }
@@ -385,7 +384,7 @@ function cerrarPopup() {
 }
   function mostrarCategorias(marca) {
   const pantalla3 = document.getElementById("pantalla3");
-  pantalla3.innerHTML = `<h2>Categoría ${marca}</h2>`;
+  pantalla3.innerHTML = <h2>Categoría ${marca}</h2>;
 
   let categorias = [];
 
@@ -501,7 +500,7 @@ else if (tipo === 'JAGUAR_GENERAL') {
   productos.forEach(p => {
     const div = document.createElement("div");
     div.className = "producto";
-    div.innerHTML = `<span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>`;
+    div.innerHTML = <span onclick="agregarCantidad('${p.nombre}', '${p.codigo}')">${p.nombre}</span>;
 
     contenedor.appendChild(div);
   });
@@ -745,7 +744,7 @@ function actualizarListaTemporal() {
   ul.innerHTML = "";
   listaTemporal.forEach(item => {
     const li = document.createElement("li");
-    li.textContent = `${item.cantidad} x ${item.nombre} (codigo ${item.codigo})`;
+    li.textContent = ${item.cantidad} x ${item.nombre} (codigo ${item.codigo});
     ul.appendChild(li);
   });
 }
@@ -774,7 +773,7 @@ async function finalizarCaptura() {
 
   try {
     await db.collection("almacenes/almacen_zapata/salidas").add(salidaData);
-    alert(`✅ Salida guardada con folio ${folio}`);
+    alert(✅ Salida guardada con folio ${folio});
     console.log("Salida:", salidaData);
     // limpiar datos si quieres
     location.reload(); 
@@ -789,40 +788,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const yyyy = hoy.getFullYear();
   const mm = String(hoy.getMonth() + 1).padStart(2, '0');
   const dd = String(hoy.getDate()).padStart(2, '0');
-  document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("fecha").value = ${yyyy}-${mm}-${dd};
 
   mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
-  }); // ← aquí faltaba cerrar correctamente
-  function actualizarListaEditable() {
-  const ul = document.getElementById("listaEditable");
-  ul.innerHTML = "";
-  listaTemporal.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: black;">
-        <strong>${item.nombre}</strong> (Código: ${item.codigo})<br>
-        Cantidad: 
-        <input type="number" min="1" value="${item.cantidad}" onchange="cambiarCantidad(${index}, this.value)" style="width: 60px; padding: 4px; margin-left: 5px;">
-        <button onclick="eliminarProducto(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:5px; margin-left:10px;">Eliminar</button>
-      </div>
-    `;
-    ul.appendChild(li);
-  });
-}
-
-function cambiarCantidad(index, nuevaCantidad) {
-  const cantidad = parseInt(nuevaCantidad);
-  if (!isNaN(cantidad) && cantidad > 0) {
-    listaTemporal[index].cantidad = cantidad;
-  }
-}
-
-function eliminarProducto(index) {
-  if (confirm("¿Eliminar este producto?")) {
-    listaTemporal.splice(index, 1);
-    actualizarListaEditable();
-  }
-}
 });
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
@@ -836,12 +804,6 @@ function eliminarProducto(index) {
   </div>
 </div> <!-- ← AQUÍ faltaba este cierre -->
   <div id="pantalla5" class="pantalla">
-  <h2>🧾 Lista de productos agregados</h2>
-  <ul id="listaEditable"></ul>
-  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
-  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
-</div>
-  <div id="pantalla6" class="pantalla">
   <h2>Resumen de Salida</h2>
   <div style="background:white; color:black; padding: 20px; border-radius: 10px;">
     <p><strong>Fecha:</strong> <span id="resumenFecha"></span></p>
@@ -853,8 +815,8 @@ function eliminarProducto(index) {
     <ul id="resumenProductos"></ul>
   </div>
   <br>
-  <button class="boton-accion" onclick="irAPantalla('pantalla5')">🔙 Regresar</button>
-  <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla4')">🔙 Regresar</button>
+ <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
