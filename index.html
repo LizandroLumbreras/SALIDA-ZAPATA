@@ -179,12 +179,14 @@
   100% { transform: rotate(360deg); }
 }
 </style>
-  
+
   <img src="logo_proveedora.png" alt="Marca de agua" class="marca-agua">
 <div id="pantalla1" class="pantalla visible">
   <h2>Registrar salida - Zapata</h2>
   <p>📌 Folio próximo: <strong id="proximoFolio">Cargando...</strong></p>
   <label>Fecha: <input type="date" id="fecha"></label><br><br>
+  <label for="fecha">Fecha:</label>
+<input type="date" id="fecha" disabled />
 <label for="entrega">Entrega:</label>
 <select id="entrega" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: none; font-size: 16px;">
   <option value="">Selecciona quien entrega</option>
@@ -310,6 +312,9 @@ async function mostrarProximoFolio() {
     numero = docSnap.data().ultimo || 1;
   }
 
+  window.onload = function () {
+  actualizarFecha();
+};
   const proximo = "PDDZAP - " + String(numero).padStart(4, "0");
   document.getElementById("proximoFolio").textContent = proximo;
 
@@ -782,6 +787,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
 });
+  function actualizarFecha() {
+  const hoy = new Date();
+  const fechaFormateada = hoy.toISOString().split("T")[0]; // yyyy-mm-dd
+  document.getElementById("fecha").value = fechaFormateada;
+}
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
