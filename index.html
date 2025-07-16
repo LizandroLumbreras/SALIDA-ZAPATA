@@ -243,12 +243,34 @@
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más artículos</button>
   <button class="boton-accion" onclick="irAPantalla('pantalla1')">🔙 Volver al inicio</button>
-  <button class="boton-accion" onclick="finalizarCaptura()">✅ Finalizar y guardar</button>
+  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
+  function mostrarResumenFinal() {
+  const fecha = document.getElementById("fecha").value;
+  const entrega = document.getElementById("entrega").value;
+  const recibe = document.getElementById("recibe").value;
+  const destino = document.getElementById("destino").value;
+
+  document.getElementById("resumenFecha").textContent = fecha;
+  document.getElementById("resumenEntrega").textContent = entrega;
+  document.getElementById("resumenRecibe").textContent = recibe;
+  document.getElementById("resumenDestino").textContent = destino;
+
+  const ul = document.getElementById("resumenProductos");
+  ul.innerHTML = "";
+  listaTemporal.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.cantidad} x ${item.nombre} (Código: ${item.codigo})`;
+    ul.appendChild(li);
+  });
+
+  irAPantalla('pantalla5');
+}
+
   // Configuración de tu proyecto Firebase
   const firebaseConfig = {
   apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
@@ -734,6 +756,21 @@ document.addEventListener("DOMContentLoaded", function() {
     <button onclick="confirmarCantidad()">Agregar</button>
   </div>
 </div> <!-- ← AQUÍ faltaba este cierre -->
+  <div id="pantalla5" class="pantalla">
+  <h2>Resumen de Salida</h2>
+  <div style="background:white; color:black; padding: 20px; border-radius: 10px;">
+    <p><strong>Fecha:</strong> <span id="resumenFecha"></span></p>
+    <p><strong>Entrega:</strong> <span id="resumenEntrega"></span></p>
+    <p><strong>Recibe:</strong> <span id="resumenRecibe"></span></p>
+    <p><strong>Destino:</strong> <span id="resumenDestino"></span></p>
+    <hr>
+    <h4>Artículos:</h4>
+    <ul id="resumenProductos"></ul>
+  </div>
+  <br>
+  <button class="boton-accion" onclick="irAPantalla('pantalla4')">🔙 Regresar</button>
+ <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
+</div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
   © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por GERA QUEZAA
