@@ -5,6 +5,16 @@
   <title>Salida de Inventario - Almacén Zapata</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    .pantalla {
+  display: none !important;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.pantalla.visible {
+  display: block !important;
+  opacity: 1;
+}
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to right, #00416A, #E4E5E6);
