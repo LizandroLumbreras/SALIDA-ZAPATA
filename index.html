@@ -372,8 +372,9 @@ function confirmarCantidad() {
   const cantidad = parseInt(document.getElementById("inputCantidad").value);
   if (!isNaN(cantidad) && cantidad > 0) {
     listaTemporal.push({ ...productoSeleccionado, cantidad });
-    actualizarListaTemporal();
     cerrarPopup();
+    actualizarListaEditable();
+    irAPantalla('pantalla6');
   } else {
     alert("Ingresa una cantidad válida.");
   }
@@ -792,6 +793,38 @@ document.addEventListener("DOMContentLoaded", function() {
 
   mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
 });
+  function actualizarListaEditable() {
+  const ul = document.getElementById("listaEditable");
+  ul.innerHTML = "";
+  listaTemporal.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${item.cantidad} x ${item.nombre} (Código: ${item.codigo})</span>
+      <br>
+      <button onclick="editarCantidad(${index})">✏️ Editar</button>
+      <button onclick="eliminarProducto(${index})">🗑️ Eliminar</button>
+    `;
+    li.style.marginBottom = "10px";
+    ul.appendChild(li);
+  });
+}
+
+function editarCantidad(index) {
+  const nuevaCantidad = prompt("Nueva cantidad:", listaTemporal[index].cantidad);
+  if (nuevaCantidad !== null && !isNaN(nuevaCantidad) && parseInt(nuevaCantidad) > 0) {
+    listaTemporal[index].cantidad = parseInt(nuevaCantidad);
+    actualizarListaEditable();
+  } else {
+    alert("Cantidad inválida.");
+  }
+}
+
+function eliminarProducto(index) {
+  if (confirm("¿Eliminar este producto de la lista?")) {
+    listaTemporal.splice(index, 1);
+    actualizarListaEditable();
+  }
+}
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
@@ -817,6 +850,15 @@ document.addEventListener("DOMContentLoaded", function() {
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla4')">🔙 Regresar</button>
  <button class="boton-accion" onclick="finalizarCaptura()">✅ Confirmar y Guardar</button>
+</div>
+  <div id="pantalla6" class="pantalla">
+  <h2>🧾 Artículos agregados</h2>
+  <div style="background:white; color:black; padding:20px; border-radius:10px;">
+    <ul id="listaEditable"></ul>
+  </div>
+  <br>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
+  <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
