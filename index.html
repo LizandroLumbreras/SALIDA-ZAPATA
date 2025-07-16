@@ -311,9 +311,6 @@ async function mostrarProximoFolio() {
   if (docSnap.exists) {
     numero = docSnap.data().ultimo || 1;
   }
-  window.onload = function () {
-  actualizarFecha();
-};
   const proximo = "PDDZAP - " + String(numero).padStart(4, "0");
   document.getElementById("proximoFolio").textContent = proximo;
 
@@ -784,7 +781,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const dd = String(hoy.getDate()).padStart(2, '0');
   document.getElementById("fecha").value = `${yyyy}-${mm}-${dd}`;
 
-  mostrarProximoFolio(); // 👈 ESTA ES LA NUEVA LÍNEA
+  mostrarProximoFolio(); // 👈 esta línea es esencial
 });
   function actualizarFecha() {
   const hoy = new Date();
@@ -806,35 +803,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("pantallaPaso1").style.display = "none";
     document.getElementById("pantallaPaso2").style.display = "block";
   }
-async function obtenerFolioDesdeFirebase() {
-  try {
-    const { data, error } = await supabase
-      .from("folios_salida_zapata")
-      .select("folio")
-      .eq("id", 1)
-      .single();
-
-    if (error || !data) {
-      console.error("Error al obtener folio:", error);
-      document.getElementById("proximoFolio").innerText = "Error";
-      return;
-    }
-
-    const folioNum = parseInt(data.folio || 0, 10) + 1;
-    const folioCompleto = "PDDZAP - " + folioNum.toString().padStart(4, "0");
-    
-    document.getElementById("proximoFolio").innerText = folioCompleto;
-    document.getElementById("loaderFolio").style.display = "none";
-
-    // Guardar el folio para uso posterior
-    window.folioActual = folioCompleto;
-    window.folioNumero = folioNum;
-  } catch (err) {
-    console.error("Excepción al obtener folio:", err);
-    document.getElementById("proximoFolio").innerText = "Error";
-  }
-}
-
 </script>
 <!-- CUADRO FLOTANTE DE CANTIDAD -->
 <div id="popupCantidad">
