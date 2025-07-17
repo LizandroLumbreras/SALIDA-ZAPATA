@@ -1011,35 +1011,18 @@ function eliminarProducto(index) {
 
     irAPantalla("pantalla5");
   };
-function mostrarNombreEntrega() {
-  const nombre = localStorage.getItem("nombreEntrega") || "Nombre no disponible";
+<script>
+window.mostrarNombreEntrega = function () {
+  const nombre = document.getElementById("entrega").value || "Nombre no disponible";
+  localStorage.setItem("nombreEntrega", nombre);
   document.getElementById("nombreEntregaTexto").textContent = nombre;
-}
+};
 
-function mostrarNombreRecibe() {
-  const nombre = localStorage.getItem("nombreRecibe") || "Nombre no disponible";
+window.mostrarNombreRecibe = function () {
+  const nombre = document.getElementById("recibe").value || "Nombre no disponible";
+  localStorage.setItem("nombreRecibe", nombre);
   document.getElementById("nombreRecibeTexto").textContent = nombre;
-}
-
-function limpiarCanvas(id) {
-  const canvas = document.getElementById(id);
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function guardarFirmaEntrega() {
-  const canvas = document.getElementById("canvasEntrega");
-  const dataURL = canvas.toDataURL();
-  localStorage.setItem("firmaEntrega", dataURL);
-  irAPantalla("pantalla7_firma");
-}
-
-function guardarFirmaRecibe() {
-  const canvas = document.getElementById("canvasRecibe");
-  const dataURL = canvas.toDataURL();
-  localStorage.setItem("firmaRecibe", dataURL);
-  alert("✅ Firma completada. Puedes ahora guardar en Firebase o imprimir.");
-  // irAPantalla("pantallaFinal") o lo que venga después
-}
+};
 </script>
+
 </html>
