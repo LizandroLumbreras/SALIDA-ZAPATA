@@ -937,16 +937,13 @@ function eliminarProducto(index) {
   <div style="background:white; color:black; padding:20px; border-radius:10px;">
     <ul id="listaEditable"></ul>
   </div>
-  <br>
-  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
-  <button class="boton-accion" onclick="irAPantalla('pantalla6_firma')">✅ Finalizar y firmar</button>
-<!-- pantalla6: Firma de quien entrega -->
+ <!-- pantalla6: Firma de quien entrega -->
 <div id="pantalla6_firma" class="pantalla" style="text-align:center;">
   <h2>✍️ Firma de quien entrega</h2>
   <h3 id="nombreEntregaTexto"></h3>
-  <canvas id="canvasEntrega" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
+  <canvas id="canvasFirmaEntrega" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
   <br>
-  <button onclick="limpiarCanvas('canvasEntrega')">🧹 Limpiar Firma</button>
+  <button onclick="limpiarCanvas('canvasFirmaEntrega')">🧹 Limpiar Firma</button>
   <button onclick="guardarFirmaEntrega()">✅ Continuar</button>
 </div>
 
@@ -954,11 +951,15 @@ function eliminarProducto(index) {
 <div id="pantalla7_firma" class="pantalla" style="text-align:center;">
   <h2>✍️ Firma de quien recibe</h2>
   <h3 id="nombreRecibeTexto"></h3>
-  <canvas id="canvasRecibe" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
+  <canvas id="canvasFirmaRecibe" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
   <br>
-  <button onclick="limpiarCanvas('canvasRecibe')">🧹 Limpiar Firma</button>
+  <button onclick="limpiarCanvas('canvasFirmaRecibe')">🧹 Limpiar Firma</button>
   <button onclick="guardarFirmaRecibe()">✅ Finalizar</button>
 </div>
+
+    <br>
+  <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
+  <button class="boton-accion" onclick="irAPantalla('pantalla6_firma')">✅ Finalizar y firmar</button>
     
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
