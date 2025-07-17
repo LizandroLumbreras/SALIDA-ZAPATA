@@ -812,7 +812,10 @@ function irAPantalla(id) {
   document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
 
+  if (id === "pantalla6_firma") mostrarNombreEntrega();
+  if (id === "pantalla7_firma") mostrarNombreRecibe();
 }
+
 
 function actualizarListaTemporal() {
   const ul = document.getElementById("listaTemporal");
@@ -998,6 +1001,37 @@ function eliminarProducto(index) {
 
     irAPantalla("pantalla5");
   };
+function mostrarNombreEntrega() {
+  const nombre = localStorage.getItem("nombreEntrega") || "Nombre no disponible";
+  document.getElementById("nombreEntregaTexto").textContent = nombre;
+}
+
+function mostrarNombreRecibe() {
+  const nombre = localStorage.getItem("nombreRecibe") || "Nombre no disponible";
+  document.getElementById("nombreRecibeTexto").textContent = nombre;
+}
+
+function limpiarCanvas(id) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function guardarFirmaEntrega() {
+  const canvas = document.getElementById("canvasEntrega");
+  const dataURL = canvas.toDataURL();
+  localStorage.setItem("firmaEntrega", dataURL);
+  irAPantalla("pantalla7_firma");
+}
+
+function guardarFirmaRecibe() {
+  const canvas = document.getElementById("canvasRecibe");
+  const dataURL = canvas.toDataURL();
+  localStorage.setItem("firmaRecibe", dataURL);
+  alert("✅ Firma completada. Puedes ahora guardar en Firebase o imprimir.");
+  // irAPantalla("pantallaFinal") o lo que venga después
+}
+
 </script>
 
 </html>
