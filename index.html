@@ -942,6 +942,33 @@ function eliminarProducto(index) {
     <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
   <button class="boton-accion" onclick="irAPantalla('pantalla6_firma')">✅ Finalizar y firmar</button>
+<script>
+  window.mostrarNombreEntrega = function () {
+    const nombre = document.getElementById("entrega").value || "Nombre no disponible";
+    localStorage.setItem("nombreEntrega", nombre);
+    document.getElementById("nombreEntregaTexto").textContent = nombre;
+  }
+
+  window.mostrarNombreRecibe = function () {
+    const nombre = document.getElementById("recibe").value || "Nombre no disponible";
+    localStorage.setItem("nombreRecibe", nombre);
+    document.getElementById("nombreRecibeTexto").textContent = nombre;
+  }
+
+  window.guardarFirmaEntrega = function () {
+    const canvas = document.getElementById("canvasFirmaEntrega");
+    const dataURL = canvas.toDataURL();
+    localStorage.setItem("firmaEntrega", dataURL);
+    irAPantalla("pantalla7_firma");
+  }
+
+  window.guardarFirmaRecibe = function () {
+    const canvas = document.getElementById("canvasFirmaRecibe");
+    const dataURL = canvas.toDataURL();
+    localStorage.setItem("firmaRecibe", dataURL);
+    alert("✅ Firma completada. Puedes ahora guardar en Firebase o imprimir.");
+  }
+</script>
     
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
