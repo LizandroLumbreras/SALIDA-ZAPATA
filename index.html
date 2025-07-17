@@ -937,27 +937,6 @@ function eliminarProducto(index) {
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
   <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
-    <h4>Firma quien entrega:</h4>
-    <button onclick="irAFirmaEntrega()">✍️ Firma quien entrega</button>
-<img id="previewFirmaEntrega" style="max-height: 100px; margin-top: 10px;" />
-    <h4>Firma quien recibe:</h4>
-<button onclick="irAFirmaRecibe()">✍️ Firma quien recibe</button>
-<img id="previewFirmaRecibe" style="max-height: 100px; display: block; margin: 10px 0;" />
-</div>
-  <div id="pantallaFirmaEntrega" class="pantalla">
-  <h2>Firma quien entrega</h2>
-  <canvas id="canvasFirmaEntrega" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
-  <br>
-  <button onclick="limpiarCanvas('canvasFirmaEntrega')">🧹 Limpiar Firma</button>
-  <button onclick="guardarFirmaEntrega()">✅ Continuar</button>
-</div>
-  <div id="pantallaFirmaRecibe" class="pantalla">
-  <h2>Firma quien recibe</h2>
-  <canvas id="canvasFirmaRecibe" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
-  <br>
-  <button onclick="limpiarCanvas('canvasFirmaRecibe')">🧹 Limpiar Firma</button>
-  <button onclick="guardarFirmaRecibe()">✅ Continuar</button>
-</div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
   © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por Adm Sistemas
