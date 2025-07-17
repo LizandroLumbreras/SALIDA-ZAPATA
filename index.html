@@ -298,24 +298,6 @@ function irAFirmaRecibe() {
   mostrarPantalla("pantallaFirmaRecibe");
 }
 
-// Firma entrega
-function guardarFirmaEntrega() {
-  const canvas = document.getElementById("canvasFirmaEntrega");
-  const firmaBase64 = canvas.toDataURL("image/png");
-  window.firmaEntrega = firmaBase64;
-  document.getElementById("previewFirmaEntrega").src = firmaBase64;
-  mostrarPantalla("pantalla6");
-}
-
-// Firma recibe
-function guardarFirmaRecibe() {
-  const canvas = document.getElementById("canvasFirmaRecibe");
-  const firmaBase64 = canvas.toDataURL("image/png");
-  window.firmaRecibe = firmaBase64;
-  document.getElementById("previewFirmaRecibe").src = firmaBase64;
-  mostrarPantalla("pantalla6");
-}
-
 // Limpiar firma
 function limpiarCanvas(canvasId) {
   const canvas = document.getElementById(canvasId);
