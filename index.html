@@ -939,6 +939,45 @@ function eliminarProducto(index) {
   <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
-  © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por ING Lizandro  
+  © 2025 Proveedora de Desechables Zapata · Sistema de Inventario · Desarrollado por ING Lizandro metiendo las firmas  
 </footer>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
+    authDomain: "inventariopv-643f1.firebaseapp.com",
+    projectId: "inventariopv-643f1",
+    storageBucket: "inventariopv-643f1.appspot.com",
+    messagingSenderId: "96242533231",
+    appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  window.guardarFirmaEntrega = async function () {
+    const canvas = document.getElementById("canvasFirmaEntrega");
+    const dataURL = canvas.toDataURL("image/png");
+    const nombre = nombreQuienEntrega || "Desconocido";
+    const filename = `firmas_salida/entrega_${Date.now()}.png`;
+
+    const storageRef = ref(storage, filename);
+    await uploadString(storageRef, dataURL, "data_url");
+
+    const url = await getDownloadURL(storageRef);
+    await addDoc(collection(db, "firmas_salida"), {
+      tipo: "entrega",
+      nombre: nombre,
+      firmaURL: url,
+      fecha: serverTimestamp()
+    });
+
+    irAPantalla("pantalla5");
+  };
+</script>
+
 </html>
