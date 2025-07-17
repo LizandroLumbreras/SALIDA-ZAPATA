@@ -290,6 +290,64 @@ select {
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script>
+  // Funciones de navegación
+function irAFirmaEntrega() {
+  mostrarPantalla("pantallaFirmaEntrega");
+}
+function irAFirmaRecibe() {
+  mostrarPantalla("pantallaFirmaRecibe");
+}
+
+// Firma entrega
+function guardarFirmaEntrega() {
+  const canvas = document.getElementById("canvasFirmaEntrega");
+  const firmaBase64 = canvas.toDataURL("image/png");
+  window.firmaEntrega = firmaBase64;
+  document.getElementById("previewFirmaEntrega").src = firmaBase64;
+  mostrarPantalla("pantalla6");
+}
+
+// Firma recibe
+function guardarFirmaRecibe() {
+  const canvas = document.getElementById("canvasFirmaRecibe");
+  const firmaBase64 = canvas.toDataURL("image/png");
+  window.firmaRecibe = firmaBase64;
+  document.getElementById("previewFirmaRecibe").src = firmaBase64;
+  mostrarPantalla("pantalla6");
+}
+
+// Limpiar firma
+function limpiarCanvas(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Activar dibujo
+function habilitarDibujoEnCanvas(idCanvas) {
+  const canvas = document.getElementById(idCanvas);
+  const ctx = canvas.getContext("2d");
+  let dibujando = false;
+
+  canvas.addEventListener("mousedown", (e) => {
+    dibujando = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  });
+  canvas.addEventListener("mousemove", (e) => {
+    if (!dibujando) return;
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+  });
+  canvas.addEventListener("mouseup", () => dibujando = false);
+  canvas.addEventListener("mouseleave", () => dibujando = false);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  habilitarDibujoEnCanvas("canvasFirmaEntrega");
+  habilitarDibujoEnCanvas("canvasFirmaRecibe");
+});
+
   function mostrarResumenFinal() {
   const fecha = document.getElementById("fecha").value;
   const entrega = document.getElementById("entrega").value;
@@ -785,6 +843,8 @@ async function finalizarCaptura() {
     recibe,
     destino,
     productos: listaTemporal,
+    firmaEntrega: window.firmaEntrega || "",
+  firmaRecibe: window.firmaRecibe || "",
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
   };
 
@@ -877,6 +937,26 @@ function eliminarProducto(index) {
   <br>
   <button class="boton-accion" onclick="irAPantalla('pantalla2')">➕ Agregar más productos</button>
   <button class="boton-accion" onclick="mostrarResumenFinal()">✅ Finalizar y revisar</button>
+    <h4>Firma quien entrega:</h4>
+    <button onclick="irAFirmaEntrega()">✍️ Firma quien entrega</button>
+<img id="previewFirmaEntrega" style="max-height: 100px; margin-top: 10px;" />
+    <h4>Firma quien recibe:</h4>
+<button onclick="irAFirmaRecibe()">✍️ Firma quien recibe</button>
+<img id="previewFirmaRecibe" style="max-height: 100px; display: block; margin: 10px 0;" />
+</div>
+  <div id="pantallaFirmaEntrega" class="pantalla">
+  <h2>Firma quien entrega</h2>
+  <canvas id="canvasFirmaEntrega" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
+  <br>
+  <button onclick="limpiarCanvas('canvasFirmaEntrega')">🧹 Limpiar Firma</button>
+  <button onclick="guardarFirmaEntrega()">✅ Continuar</button>
+</div>
+  <div id="pantallaFirmaRecibe" class="pantalla">
+  <h2>Firma quien recibe</h2>
+  <canvas id="canvasFirmaRecibe" width="300" height="150" style="border:1px solid #ccc; background:white;"></canvas>
+  <br>
+  <button onclick="limpiarCanvas('canvasFirmaRecibe')">🧹 Limpiar Firma</button>
+  <button onclick="guardarFirmaRecibe()">✅ Continuar</button>
 </div>
 </body>
 <footer style="text-align: center; margin-top: 40px; color: rgba(255,255,255,0.7); font-size: 14px;">
