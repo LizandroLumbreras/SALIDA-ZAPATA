@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Firma Encargado de Almacén</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 1em; background: #f0f0f0; }
+    canvas { border: 2px solid #000; background: white; border-radius: 6px; }
+    button {
+      margin: 1em;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .limpiar { background: gray; color: white; }
+    .continuar { background: #388e3c; color: white; }
+  </style>
+</head>
+<body>
+  <h2>✍️ Firma del encargado de almacén</h2>
+  <canvas id="canvas" width="320" height="150"></canvas><br>
+  <button class="limpiar" onclick="limpiar()">🧹 Limpiar</button>
+  <button class="continuar" onclick="guardar()">✅ Continuar</button>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let dibujando = false;
+
+    canvas.addEventListener('mousedown', () => dibujando = true);
+    canvas.addEventListener('mouseup', () => dibujando = false);
+    canvas.addEventListener('mouseout', () => dibujando = false);
+    canvas.addEventListener('mousemove', dibujar);
+
+    canvas.addEventListener('touchstart', () => dibujando = true);
+    canvas.addEventListener('touchend', () => dibujando = false);
+    canvas.addEventListener('touchcancel', () => dibujando = false);
+    canvas.addEventListener('touchmove', dibujarTouch, { passive: false });
+
+    function dibujar(e) {
+      if (!dibujando) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function dibujarTouch(e) {
+      if (!dibujando) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+      ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    }
+
+    function limpiar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+    }
+
+    function guardar() {
+      const firma = canvas.toDataURL("image/png");
+      localStorage.setItem("firmaEntrega", firma);
+      window.location.href = "pantalla5.html";
+    }
+  </script>
+</body>
+</html>
