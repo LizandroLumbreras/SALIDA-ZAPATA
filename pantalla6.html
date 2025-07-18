@@ -71,22 +71,26 @@
       border-radius: 5px;
     }
 
-    button {
-      display: block;
-      margin: 30px auto 0;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background: green;
-      color: white;
-      cursor: pointer;
-    @media print {
+  button {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: green;
+  color: white;
+  cursor: pointer;
+}
+ @media print {
   body {
-    background: white !important;
+    margin-top: 15px;
+    margin-bottom: 15px;
     color: black !important;
-    margin: 10px 0; /* márgenes arriba y abajo */
-    padding: 0;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 14px;
   }
 
   .resumen {
@@ -97,25 +101,24 @@
     background: white;
     color: black;
   }
-
-  .resumen * {
+     .resumen * {
     color: black !important;
     background: none !important;
   }
-
-  .resumen h2 {
+    .resumen h2 {
     margin-top: 10px;
     font-size: 15px;
     text-align: center;
   }
 
-  ul {
+ ul {
     padding-left: 10px;
   }
 
   img {
     max-width: 100%;
     height: auto;
+    filter: contrast(150%);
   }
 
   .firmas-vertical {
@@ -138,6 +141,7 @@
     height: 60px;
     border: 1px solid #000;
     border-radius: 4px;
+    filter: contrast(180%) brightness(1.2);
   }
 
   button,
@@ -171,10 +175,10 @@
   </div>
 </div>
 
-    <button onclick="window.print()">🖨️ Imprimir resumen</button>
+    <button class="no-print" onclick="window.print()">🖨️ Imprimir resumen</button>
   </div>
 
-  <button onclick="guardarEnFirebase()" style="background-color: #007bff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
+  <button class="no-print" onclick="guardarEnFirebase()" style="background-color: #007bff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
     💾 Guardar salida
   </button>
 
@@ -269,7 +273,7 @@ localStorage.removeItem("destino");
       await obtenerFolioDesdeFirebase();
 
       document.getElementById('fecha').textContent = localStorage.getItem("resumenFecha") || "Sin fecha";
-      document.getElementById('entrega').textContent = localStorage.getItem("entregantrega") || "No asignado";
+      document.getElementById('entrega').textContent = localStorage.getItem("entrega") || "No asignado";
       document.getElementById('recibe').textContent = localStorage.getItem("recibe") || "No asignado";
       document.getElementById('firmaEntrega').src = localStorage.getItem("firmaEntrega") || "";
       document.getElementById('firmaRecibe').src = localStorage.getItem("firmaRecibe") || "";
