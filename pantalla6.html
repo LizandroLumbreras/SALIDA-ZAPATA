@@ -175,8 +175,10 @@
   </div>
 </div>
 
-    <button class="no-print" onclick="window.print()">🖨️ Imprimir resumen</button>
-  </div>
+    <button class="no-print" onclick="imprimirYDescargar()" style="background-color: #28a745; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
+  🖨️ Imprimir y Descargar
+</button>
+
 
   <button class="no-print" onclick="guardarEnFirebase()" style="background-color: #007bff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
     💾 Guardar salida
@@ -213,7 +215,21 @@
       }
       document.getElementById("folio").textContent = folio;
     }
+    function imprimirYDescargar() {
+  const elemento = document.querySelector(".resumen");
 
+  html2canvas(elemento, { scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = `${document.getElementById("folio").textContent || "salida"}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    // Luego imprimir
+    setTimeout(() => {
+      window.print();
+    }, 500);
+  });
+}
     async function guardarEnFirebase() {
       await obtenerFolioDesdeFirebase(); // Asegura folio actualizado
 
@@ -288,5 +304,6 @@ localStorage.removeItem("destino");
       });
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
