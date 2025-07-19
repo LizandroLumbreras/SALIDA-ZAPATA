@@ -27,11 +27,12 @@
 }
 
     .resumen {
-      background: rgba(255,255,255,0.1);
+     background: white; /* 👈 cambia esto */
       border-radius: 10px;
       padding: 20px;
       max-width: 800px;
       margin: auto;
+      color: black; /* para asegurar contraste */
     }
 
     h2 {
@@ -217,6 +218,9 @@
     }
     function imprimirYDescargar() {
   const elemento = document.querySelector(".resumen");
+       // Asegura fondo blanco solo para captura
+  const originalBackground = elemento.style.background;
+  elemento.style.background = "white";
 
   html2canvas(elemento, { scale: 2 }).then(canvas => {
     const link = document.createElement("a");
