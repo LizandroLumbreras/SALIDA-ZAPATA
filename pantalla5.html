@@ -3,68 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <title>Firma de recibido</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="screen-orientation" content="landscape">
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 1em; background: #f0f0f0; }
-    canvas { border: 2px solid #000; background: white; border-radius: 6px; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    canvas {
+      border: 2px solid #000;
+      background: white;
+      border-radius: 6px;
+      touch-action: none;
+      width: 90vw;
+      height: 60vh;
+    }
+
     button {
-      margin: 1em;
+      margin: 10px 10px 0 10px;
       padding: 12px 20px;
       font-size: 16px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
     }
-    .limpiar { background: gray; color: white; }
-    .continuar { background: #388e3c; color: white; }
+
+    .limpiar {
+      background: gray;
+      color: white;
+    }
+
+    .continuar {
+      background: #388e3c;
+      color: white;
+    }
+
+    .botones {
+      margin-top: 10px;
+    }
+
+    @media screen and (orientation: portrait) {
+      body::before {
+        content: "🔄 Gira tu dispositivo para firmar en horizontal";
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        text-align: center;
+        color: #333;
+        background: #ffeb3b;
+        padding: 10px;
+        font-weight: bold;
+        z-index: 999;
+      }
+    }
   </style>
 </head>
 <body>
   <h2>✍️ Firma de quien recibe</h2>
-  <canvas id="canvas" width="320" height="150"></canvas><br>
-  <button class="limpiar" onclick="limpiar()">🧹 Limpiar</button>
-  <button class="continuar" onclick="guardar()">✅ Finalizar</button>
+  <canvas id="canvas" width="480" height="240"></canvas>
+
+  <div class="botones">
+    <button class="limpiar" onclick="limpiar()">🧹 Limpiar</button>
+    <button class="continuar" onclick="guardar()">✅ Finalizar</button>
+  </div>
 
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let dibujando = false;
 
-    canvas.addEventListener('mousedown', () => dibujando = true);
-    canvas.addEventListener('mouseup', () => dibujando = false);
-    canvas.addEventListener('mouseout', () => dibujando = false);
-    canvas.addEventListener('mousemove', dibujar);
-
-    canvas.addEventListener('touchstart', () => dibujando = true);
-    canvas.addEventListener('touchend', () => dibujando = false);
-    canvas.addEventListener('touchcancel', () => dibujando = false);
-    canvas.addEventListener('touchmove', dibujarTouch, { passive: false });
+    function getXY(e, isTouch) {
+      const rect = canvas.getBoundingClientRect();
+      if (isTouch) {
+        const touch = e.touches[0];
+        return {
+          x: touch.clientX - rect.left,
+          y: touch.clientY - rect.top
+        };
+      } else {
+        return {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        };
+      }
+    }
 
     function dibujar(e) {
       if (!dibujando) return;
-      const rect = canvas.getBoundingClientRect();
+      const { x, y } = getXY(e, false);
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
       ctx.strokeStyle = '#000';
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.lineTo(x, y);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.moveTo(x, y);
     }
 
     function dibujarTouch(e) {
       if (!dibujando) return;
       e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const touch = e.touches[0];
+      const { x, y } = getXY(e, true);
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
       ctx.strokeStyle = '#000';
-      ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      ctx.lineTo(x, y);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      ctx.moveTo(x, y);
     }
+
+    canvas.addEventListener('mousedown', () => dibujando = true);
+    canvas.addEventListener('mouseup', () => {
+      dibujando = false;
+      ctx.beginPath();
+    });
+    canvas.addEventListener('mousemove', dibujar);
+
+    canvas.addEventListener('touchstart', () => dibujando = true);
+    canvas.addEventListener('touchend', () => {
+      dibujando = false;
+      ctx.beginPath();
+    });
+    canvas.addEventListener('touchmove', dibujarTouch, { passive: false });
 
     function limpiar() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
