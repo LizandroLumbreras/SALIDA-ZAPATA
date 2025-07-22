@@ -15,7 +15,15 @@
       box-sizing: border-box;
       position: relative;
     }
-
+    input[list], select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  box-sizing: border-box;
+}
     .marca-agua {
       position: fixed;
       top: 50%;
@@ -90,7 +98,7 @@
       <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
     </select>
 
-   <label for="recibe">Recibe:</label>
+  <label for="recibe">Recibe:</label>
 <input list="recibe-lista" id="recibe" name="recibe" placeholder="Selecciona o escribe nombre" />
 
 <datalist id="recibe-lista">
@@ -120,6 +128,7 @@
   <option value="LA MISION SUCR MORELOS">
   <option value="LA MISION SUCR ALLENDE">
 </datalist>
+    
     <button class="boton" onclick="continuar()">Continuar</button>
 
 <!-- Botón de descarga del manual -->
