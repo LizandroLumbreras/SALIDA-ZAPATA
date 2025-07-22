@@ -24,12 +24,11 @@
     }
 
     canvas {
-      border: 2px solid #000;
-      background: white;
-      border-radius: 6px;
-      touch-action: none;
-      width: 90vw;
-      height: 60vh;
+  display: block;
+  border: 2px solid #000;
+  background: white;
+  border-radius: 6px;
+  touch-action: none;
     }
 
     button {
@@ -74,7 +73,7 @@
 </head>
 <body>
   <h2>✍️ Firma del encargado de almacén</h2>
-  <canvas id="canvas" width="480" height="240"></canvas>
+  <canvas id="canvas"></canvas>
 
   <div class="botones">
     <button class="limpiar" onclick="limpiar()">🧹 Limpiar</button>
@@ -84,6 +83,12 @@
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    function redimensionarCanvas() {
+  canvas.width = window.innerWidth * 0.9;
+  canvas.height = window.innerHeight * 0.6;
+}
+redimensionarCanvas();
+window.addEventListener("resize", redimensionarCanvas);
     let dibujando = false;
 
     function getXY(e, isTouch) {
