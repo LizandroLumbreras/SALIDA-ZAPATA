@@ -90,35 +90,36 @@
       <option value="Alfredo Medina Garcia">Alfredo Medina Garcia</option>
     </select>
 
-    <label for="recibe">Recibe:</label>
-    <select id="recibe">
-      <option value="">Selecciona quien recibe</option>
-      <option value="Luis Miguel Medellin Escalona">Luis Miguel Medellin Escalona</option>
-      <option value="Sergio Becerra Mravilla">Sergio Becerra Mravilla</option>
-      <option value="Eduardo Cuellar Vazquez">Eduardo Cuellar Vazquez</option>
-      <option value="Fernando Folores de la Cerda">Fernando Folores de la Cerda</option>
-      <option value="David Wenseslao Morales Martinez">David Wenseslao Morales Martinez</option>
-    </select>
+   <label for="recibe">Recibe:</label>
+<input list="recibe-lista" id="recibe" name="recibe" placeholder="Selecciona o escribe nombre" />
 
-    <label for="destino">Destino:</label>
-    <select id="destino">
-      <option value="">Selecciona destino</option>
-      <option value="BODEGA MATRIZ MADERO 690">BODEGA MATRIZ MADERO 690</option>
-      <option value="SUCURSAL GUADALUPE B41">SUCURSAL GUADALUPE B41</option>
-      <option value="SUCURSAL MONTEMORELOS">SUCURSAL MONTEMORELOS</option>
-      <option value="SUCURSAL ALLENDE">SUCURSAL ALLENDE</option>
-      <option value="SUPER TIENDAS RICO">SUPER TIENDAS RICO</option>
-      <option value="ROBERTO YADO">ROBERTO YADO</option>
-      <option value="COMERCIALIZADORA CAVAZOS">COMERCIALIZADORA CAVAZOS</option>
-      <option value="EL PARIENTE ALIMENTOS">EL PARIENTE ALIMENTOS</option>
-      <option value="LA MISION SUC DIAZ ORDAZ">LA MISION SUC DIAZ ORDAZ</option>
-      <option value="LA MISION SUC VILLEGAS">LA MISION SUC VILLEGAS</option>
-      <option value="LA MISION SUC PETACA">LA MISION SUC PETACA</option>
-      <option value="LA MISION SUC ARBOLEDAS">LA MISION SUC ARBOLEDAS</option>
-      <option value="LA MISION SUCR MORELOS">LA MISION SUCR MORELOS</option>
-      <option value="LA MISION SUCR ALLENDE">LA MISION SUCR ALLENDE</option>
-    </select>
+<datalist id="recibe-lista">
+  <option value="Luis Miguel Medellin Escalona">
+  <option value="Sergio Becerra Maravilla">
+  <option value="Eduardo Cuellar Vazquez">
+  <option value="Fernando Flores de la Cerda">
+  <option value="David Wenseslao Morales Martinez">
+</datalist>
+    
+<label for="destino">Destino:</label>
+<input list="destinos" id="destino" name="destino" placeholder="Selecciona o escribe destino" />
 
+<datalist id="destinos">
+  <option value="BODEGA MATRIZ MADERO 690">
+  <option value="SUCURSAL GUADALUPE B41">
+  <option value="SUCURSAL MONTEMORELOS">
+  <option value="SUCURSAL ALLENDE">
+  <option value="SUPER TIENDAS RICO">
+  <option value="ROBERTO YADO">
+  <option value="COMERCIALIZADORA CAVAZOS">
+  <option value="EL PARIENTE ALIMENTOS">
+  <option value="LA MISION SUC DIAZ ORDAZ">
+  <option value="LA MISION SUC VILLEGAS">
+  <option value="LA MISION SUC PETACA">
+  <option value="LA MISION SUC ARBOLEDAS">
+  <option value="LA MISION SUCR MORELOS">
+  <option value="LA MISION SUCR ALLENDE">
+</datalist>
     <button class="boton" onclick="continuar()">Continuar</button>
 
 <!-- Botón de descarga del manual -->
