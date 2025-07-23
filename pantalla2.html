@@ -121,8 +121,9 @@
   <div class="tarjeta" onclick="mostrarCategorias('REYMA')">REYMA</div>
   <div class="tarjeta" onclick="mostrarCategorias('BIOPLAST')">BIOPLAST</div>
   <div class="tarjeta" onclick="mostrarCategorias('JAGUAR')">JAGUAR</div>
-   <div class="tarjeta" onclick="mostrarCategorias('BIGCOLA')">BIG COLA</div>
+  <div class="tarjeta" onclick="mostrarCategorias('BIGCOLA')">BIG COLA</div>
   <div class="tarjeta" onclick="mostrarCategorias('CONVERMEX')">CONVERMEX</div>
+  <div class="tarjeta" onclick="mostrarCategorias('BOLSASPLASTICAS')">BOLSAS PLASTICAS</div>
 </div>
 
 
@@ -156,7 +157,8 @@
   BIOPLAST: ['BIO CONTENEDOR', 'BIO CHAROLA','LINEA BIO'],
   JAGUAR: ['JAGUAR Y JUGUERO'],// ✅ corregido
   BIGCOLA: ['REFRESCOS'],            // 🟢 ya estaba bien
-  CONVERMEX: ['VASOS']                  // ✅ corregido quitando 'TAPAS'
+  CONVERMEX: ['VASOS'],
+  BOLSASPLASTICAS: ['CAMISETA', 'BOLSA_CAMISETA', 'BOLSA_PLANA', 'BOLSA_ROLLO', 'CIMAPLAST'],
 };
 
 const productosPorCategoria = {
@@ -376,6 +378,42 @@ const productosPorCategoria = {
     { nombre: "CH855", codigo: "5283" },
     { nombre: "CH066", codigo: "5282" }
   ]
+  'CAMISETA': [
+  { nombre: "CAMISETA MEDIANA NEGRA BD", codigo: "4660" },
+  { nombre: "CAMISETA CHICA BD NEGRA", codigo: "7702" },
+  { nombre: "CAMISETA GRANDE BD NEGRA", codigo: "13609" },
+  { nombre: "CAMISETA MINI POLIPALPEL BIODEGRADABLE", codigo: "150100" },
+  { nombre: "CAMISETA GRANDE POLIPALPEL AD BIO", codigo: "150103" },
+  { nombre: "CAMISETA EXTRA GRANDE ALTA DENC", codigo: "150104" },
+  { nombre: "CAMISETA CHICA POLISEDA", codigo: "7503009154239" },
+  { nombre: "CAMISETA MEDIANA POLISEDA", codigo: "7503009154246" },
+  { nombre: "CAMISETA MINI POLISEDA VALLADOLID", codigo: "7503024644128" },
+  { nombre: "CAMISETA GRANDE POLISEDA BIO", codigo: "7503024644951" }
+],
+
+'BOLSA_CAMISETA': [
+  { nombre: "BOLSA CAMISETA CHICA POLIPALPEL BIO", codigo: "150101" },
+  { nombre: "BOLSA CAMISETA MEDIANA POLIPALPEL BIO", codigo: "150102" }
+],
+
+'BOLSA_PLANA': [
+  { nombre: "BOLSA PLANA 25X35 CAL. 150", codigo: "142535" },
+  { nombre: "BOLSA PLANA 25X40", codigo: "142540" },
+  { nombre: "BOLSA PLANA 40X60", codigo: "144060" },
+  { nombre: "BOLSA PLANA 50X70 CAL. 150", codigo: "145070" },
+  { nombre: "BOLSA PLANA 70X90 CAL. 150", codigo: "147090" },
+  { nombre: "BOLSA PLANA 20X30 C.150", codigo: "7503009154307" }
+],
+
+'BOLSA_ROLLO': [
+  { nombre: "BOLSA DE ROLLO 18X25 ALTA DENCIDAD", codigo: "131825" },
+  { nombre: "BOLSA DE ROLLO 20X30 ALTA DENCIDAD", codigo: "132030" },
+  { nombre: "BOLSA DE ROLLO 40X60 ALTA DENCIDAD", codigo: "134060" }
+],
+
+'CIMAPLAST': [
+  { nombre: "BOLSA CIMAPLAS 10X20 NAT CAL. 150", codigo: "7501508800237" }
+]
 };
     let productoSeleccionado = null;
 
