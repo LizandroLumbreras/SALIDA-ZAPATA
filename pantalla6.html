@@ -192,15 +192,15 @@
     const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
     const chatId = "6617988297";
 
-    let mensaje = 🚨 *Nueva salida registrada en Almacén Zapata*\n\n;
-    mensaje += 📄 *Folio:* ${salida.folio}\n;
-    mensaje += 📅 *Fecha:* ${salida.fecha}\n;
-    mensaje += 👤 *Entrega:* ${salida.entrega}\n;
-    mensaje += 🤝 *Recibe:* ${salida.recibe}\n;
-    mensaje += 📍 *Destino:* ${salida.destino}\n\n;
+    let mensaje = 🚨 Nueva salida registrada en Almacén Zapata\n\n;
+    mensaje += 📄 Folio: ${salida.folio}\n;
+    mensaje += 📅 Fecha: ${salida.fecha}\n;
+    mensaje += 👤 Entrega: ${salida.entrega}\n;
+    mensaje += 🤝 Recibe: ${salida.recibe}\n;
+    mensaje += 📍 Destino: ${salida.destino}\n\n;
 
     if (salida.articulos.length > 0) {
-      mensaje += 📦 *Artículos:*\n;
+      mensaje += 📦 Artículos:\n;
       salida.articulos.forEach(p => {
         mensaje += • ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n;
       });
@@ -339,9 +339,3 @@ localStorage.removeItem("destino");
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
-
-
-
-
-
-
