@@ -37,10 +37,10 @@
   <div class="resumen" id="resumen">
     <h2>📋 Resumen de salida</h2>
     <p><strong>Folio:</strong> <span id="folio">Cargando...</span></p>
-    <p><strong>Fecha:</strong> <span id="fecha"></span></p>
-    <p><strong>Entrega:</strong> <span id="entrega"></span></p>
-    <p><strong>Recibe:</strong> <span id="recibe"></span></p>
-    <p><strong>Destino:</strong> <span id="destino"></span></p>
+    <p><strong>Fecha:</strong> <span id="fecha">—</span></p>
+    <p><strong>Entrega:</strong> <span id="entrega">—</span></p>
+    <p><strong>Recibe:</strong> <span id="recibe">—</span></p>
+    <p><strong>Destino:</strong> <span id="destino">—</span></p>
 
     <h3>🛒 Artículos:</h3>
     <ul id="lista-articulos"></ul>
@@ -63,43 +63,187 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
   <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    // ⚠️ Ideal mover esto a backend/Cloud Function para no exponer el token
+    // ============ Helpers ============
+    const L = {
+      get: (k, fallback = "") => {
+        const v = localStorage.getItem(k);
+        if (v !== null && v !== undefined && v !== "") return v;
+        const s = sessionStorage.getItem(k);
+        return (s !== null && s !== undefined && s !== "") ? s : fallback;
+      },
+      getJSON: (k) => {
+        try {
+          const v = localStorage.getItem(k) ?? sessionStorage.getItem(k);
+          return v ? JSON.parse(v) : null;
+        } catch { return null; }
+      },
+      delMany: (arr) => arr.forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); })
+    };
+
+    // ⚠️ Ideal mover a backend para no exponer token
     async function notificarLobaZapata(salida) {
       try {
         const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
         const chatId = "6617988297";
-
         let mensaje = `🚨 Nueva salida registrada en Almacén Zapata\n\n`;
         mensaje += `📄 Folio: ${salida.folio}\n`;
         mensaje += `📅 Fecha: ${salida.fecha}\n`;
         mensaje += `👤 Entrega: ${salida.entrega}\n`;
         mensaje += `🤝 Recibe: ${salida.recibe}\n`;
         mensaje += `📍 Destino: ${salida.destino}\n\n`;
-
         if (Array.isArray(salida.articulos) && salida.articulos.length > 0) {
           mensaje += `📦 Artículos:\n`;
-          salida.articulos.forEach(p => {
-            mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`;
-          });
+          salida.articulos.forEach(p => { mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`; });
         } else {
           mensaje += `⚠️ No hay artículos registrados.\n`;
         }
-
         await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ chat_id: chatId, text: mensaje })
         });
-      } catch (e) {
-        console.warn("No se pudo notificar por Telegram (continuando):", e);
-      }
+      } catch (e) { console.warn("No se pudo notificar por Telegram:", e); }
     }
 
     // --- Firebase ---
     const firebaseConfig = {
-      apiKey: "AIzaSyCK5nb6u2CGRJ8
+      apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
+      authDomain: "inventariopv-643f1.firebaseapp.com",
+      projectId: "inventariopv-643f1",
+      storageBucket: "inventariopv-643f1.appspot.com",
+      messagingSenderId: "96242533231",
+      appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let folio = "PDDZAP - PENDIENTE";
+
+    // Solo vista previa del siguiente folio (no bloquea)
+    async function previsualizarProximoFolio() {
+      try {
+        const ref = db.collection("consecutivos").doc("salidas_zapata");
+        const snap = await ref.get();
+        const next = (snap.exists ? Number(snap.data().ultimo) || 0 : 0) + 1;
+        folio = "PDDZAP - " + String(next).padStart(4, "0");
+      } catch (e) {
+        console.warn("No se pudo leer folio (muestra PENDIENTE).", e);
+        folio = "PDDZAP - PENDIENTE";
+      } finally {
+        document.getElementById("folio").textContent = folio;
+      }
+    }
+
+    // Bloquea y genera folio con transacción
+    async function generarFolioTransaccion() {
+      const ref = db.collection("consecutivos").doc("salidas_zapata");
+      const next = await db.runTransaction(async (tx) => {
+        const doc = await tx.get(ref);
+        const ultimo = doc.exists ? (Number(doc.data().ultimo) || 0) : 0;
+        const siguiente = ultimo + 1;
+        tx.set(ref, { ultimo: siguiente }, { merge: true });
+        return siguiente;
+      });
+      return "PDDZAP - " + String(next).padStart(4, "0");
+    }
+
+    async function descargarPNGyImprimir(nombreArchivo = "salida") {
+      const elemento = document.getElementById("resumen");
+      const originalBg = elemento.style.background;
+      elemento.style.background = "white";
+      const canvas = await html2canvas(elemento, { scale: 2, backgroundColor: "#ffffff" });
+      const link = document.createElement("a");
+      link.download = `${nombreArchivo}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      setTimeout(() => { window.print(); elemento.style.background = originalBg; }, 400);
+    }
+
+    async function guardarDescargarImprimir() {
+      const btn = document.getElementById("btn-unico");
+      btn.disabled = true; const oldText = btn.textContent; btn.textContent = "Procesando...";
+
+      try {
+        // 0) Cargar artículos desde storage
+        const articulos = L.getJSON("carrito") || [];
+        if (!Array.isArray(articulos) || articulos.length === 0) {
+          alert("⚠️ No hay artículos en el resumen. Vuelve a la pantalla anterior y agrega productos.");
+          return;
+        }
+
+        // 1) Folio con transacción
+        folio = await generarFolioTransaccion();
+        document.getElementById("folio").textContent = folio;
+
+        // 2) Datos
+        const fecha = L.get("resumenFecha", L.get("fecha", new Date().toLocaleString("es-MX")));
+        const salida = {
+          folio,
+          fecha,
+          entrega: L.get("entrega", ""),
+          recibe:  L.get("recibe",  ""),
+          destino: L.get("destino", "NO DEFINIDO"),
+          firmaEntrega: L.get("firmaEntrega", ""),
+          firmaRecibe:  L.get("firmaRecibe",  ""),
+          articulos,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // 3) Guardar
+        await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
+
+        // 4) Descargar PNG e imprimir
+        await descargarPNGyImprimir(folio);
+
+        // 5) Notificar (no bloquea)
+        notificarLobaZapata(salida);
+
+        // 6) Limpia y redirige
+        L.delMany(["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]);
+        setTimeout(() => {
+          alert("✅ Salida guardada, descargada e impresa correctamente.");
+          window.location.href = "./index.html";
+        }, 2500);
+
+      } catch (error) {
+        console.error("Error en el proceso:", error);
+        alert("❌ Ocurrió un error al guardar/imprimir. Revisa la consola.");
+      } finally {
+        btn.disabled = false; btn.textContent = oldText;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await previsualizarProximoFolio();
+
+      // Carga segura de datos (desde localStorage o sessionStorage)
+      const fechaTxt = L.get("resumenFecha", L.get("fecha", "Sin fecha"));
+      document.getElementById('fecha').textContent   = fechaTxt;
+      document.getElementById('entrega').textContent = L.get("entrega", "No asignado");
+      document.getElementById('recibe').textContent  = L.get("recibe",  "No asignado");
+      document.getElementById('destino').textContent = L.get("destino", "NO DEFINIDO");
+      document.getElementById('firmaEntrega').src    = L.get("firmaEntrega", "");
+      document.getElementById('firmaRecibe').src     = L.get("firmaRecibe",  "");
+
+      const lista = L.getJSON("carrito") || [];
+      const ul = document.getElementById("lista-articulos");
+      ul.innerHTML = "";
+      if (!Array.isArray(lista) || lista.length === 0) {
+        const li = document.createElement("li");
+        li.textContent = "— Sin artículos agregados —";
+        ul.appendChild(li);
+      } else {
+        lista.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
+          ul.appendChild(li);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
