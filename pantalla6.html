@@ -5,151 +5,29 @@
   <title>Resumen de Salida</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #00416A, #E4E5E6);
-      color: white;
-      padding: 20px;
+    body { font-family: Arial, sans-serif; background: linear-gradient(to right, #00416A, #E4E5E6); color: white; padding: 20px; }
+    .firmas-vertical { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+    .firmas-vertical img { width: 100%; max-width: 240px; height: auto; background: white; border-radius: 5px; }
+    .resumen { background: white; border-radius: 10px; padding: 20px; max-width: 800px; margin: auto; color: black; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .firmas { display: flex; justify-content: space-between; margin-top: 30px; }
+    .firmas div { width: 45%; text-align: center; }
+    .firmas img { max-width: 100%; height: 100px; background: white; border-radius: 5px; }
+    ul { list-style: none; padding: 0; margin: 10px 0; }
+    li { margin-bottom: 10px; background: white; color: black; padding: 10px; border-radius: 5px; }
+    button { display: block; margin: 30px auto 0; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; background: green; color: white; cursor: pointer; }
+    @media print {
+      body { margin-top: 15px; margin-bottom: 15px; color: black !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 14px; }
+      .resumen { width: 280px; margin: auto; padding: 5px 10px; font-size: 18px; background: white; color: black; }
+      .resumen * { color: black !important; background: none !important; }
+      .resumen h2 { margin-top: 10px; font-size: 15px; text-align: center; }
+      ul { padding-left: 10px; }
+      img { max-width: 100%; height: auto; filter: contrast(150%); }
+      .firmas-vertical { display: flex; flex-direction: column; align-items: center; margin-top: 20px; font-size: 12px; }
+      .firmas-vertical div { margin-bottom: 20px; width: 100%; text-align: center; }
+      .firmas-vertical img { width: 90%; max-width: 250px; height: 60px; border: 1px solid #000; border-radius: 4px; filter: contrast(180%) brightness(1.2); }
+      button, .no-print { display: none !important; }
     }
-    .firmas-vertical {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.firmas-vertical img {
-  width: 100%;
-  max-width: 240px;
-  height: auto;
-  background: white;
-  border-radius: 5px;
-}
-
-    .resumen {
-     background: white; /* 👈 cambia esto */
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-      color: black; /* para asegurar contraste */
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .firmas {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-    }
-
-    .firmas div {
-      width: 45%;
-      text-align: center;
-    }
-
-    .firmas img {
-      max-width: 100%;
-      height: 100px;
-      background: white;
-      border-radius: 5px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0;
-    }
-
-    li {
-      margin-bottom: 10px;
-      background: white;
-      color: black;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-  button {
-  display: block;
-  margin: 30px auto 0;
-  padding: 12px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: green;
-  color: white;
-  cursor: pointer;
-}
- @media print {
-  body {
-    margin-top: 15px;
-    margin-bottom: 15px;
-    color: black !important;
-    background: white !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    font-size: 14px;
-  }
-
-  .resumen {
-    width: 280px; /* para impresora 58mm */
-    margin: auto;
-    padding: 5px 10px;
-    font-size: 18px;
-    background: white;
-    color: black;
-  }
-     .resumen * {
-    color: black !important;
-    background: none !important;
-  }
-    .resumen h2 {
-    margin-top: 10px;
-    font-size: 15px;
-    text-align: center;
-  }
-
- ul {
-    padding-left: 10px;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    filter: contrast(150%);
-  }
-
-  .firmas-vertical {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    font-size: 12px;
-  }
-
-  .firmas-vertical div {
-    margin-bottom: 20px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .firmas-vertical img {
-    width: 90%;
-    max-width: 250px;
-    height: 60px;
-    border: 1px solid #000;
-    border-radius: 4px;
-    filter: contrast(180%) brightness(1.2);
-  }
-
-  button,
-  .no-print {
-    display: none !important;
-  }
-}
   </style>
 </head>
 <body>
@@ -166,67 +44,68 @@
     <ul id="lista-articulos"></ul>
 
     <div class="firmas-vertical">
-  <div>
-    <p>Firma quien entrega</p>
-    <img id="firmaEntrega" src="" alt="Firma entrega">
+      <div>
+        <p>Firma quien entrega</p>
+        <img id="firmaEntrega" src="" alt="Firma entrega">
+      </div>
+      <div style="margin-top: 30px;">
+        <p>Firma quien recibe</p>
+        <img id="firmaRecibe" src="" alt="Firma recibe">
+      </div>
+    </div>
+
+    <button class="no-print" onclick="imprimirYDescargar()" style="background-color:#28a745;">🖨️ Imprimir y Descargar</button>
+    <button class="no-print" onclick="guardarEnFirebase()" style="background-color:#007bff;">💾 Guardar salida</button>
   </div>
-  <div style="margin-top: 30px;">
-    <p>Firma quien recibe</p>
-    <img id="firmaRecibe" src="" alt="Firma recibe">
-  </div>
-</div>
-
-    <button class="no-print" onclick="imprimirYDescargar()" style="background-color: #28a745; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
-  🖨️ Imprimir y Descargar
-</button>
-
-
-  <button class="no-print" onclick="guardarEnFirebase()" style="background-color: #007bff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
-    💾 Guardar salida
-  </button>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
   <script>
-  async function notificarLobaZapata(salida) {
-    const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
-    const chatId = "6617988297";
+    // ⚠️ Ideal mover este envío a backend para no exponer el token
+    async function notificarLobaZapata(salida) {
+      try {
+        const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
+        const chatId = "6617988297";
 
-    let mensaje = 🚨 *Nueva salida registrada en Almacén Zapata*\n\n;
-    mensaje += 📄 *Folio:* ${salida.folio}\n;
-    mensaje += 📅 *Fecha:* ${salida.fecha}\n;
-    mensaje += 👤 *Entrega:* ${salida.entrega}\n;
-    mensaje += 🤝 *Recibe:* ${salida.recibe}\n;
-    mensaje += 📍 *Destino:* ${salida.destino}\n\n;
+        let mensaje = `🚨 Nueva salida registrada en Almacén Zapata\n\n`;
+        mensaje += `📄 Folio: ${salida.folio}\n`;
+        mensaje += `📅 Fecha: ${salida.fecha}\n`;
+        mensaje += `👤 Entrega: ${salida.entrega}\n`;
+        mensaje += `🤝 Recibe: ${salida.recibe}\n`;
+        mensaje += `📍 Destino: ${salida.destino}\n\n`;
 
-    if (salida.articulos.length > 0) {
-      mensaje += 📦 *Artículos:*\n;
-      salida.articulos.forEach(p => {
-        mensaje += • ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n;
-      });
-    } else {
-      mensaje += ⚠️ No hay artículos registrados.\n;
+        if (Array.isArray(salida.articulos) && salida.articulos.length > 0) {
+          mensaje += `📦 Artículos:\n`;
+          salida.articulos.forEach(p => {
+            mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`;
+          });
+        } else {
+          mensaje += `⚠️ No hay artículos registrados.\n`;
+        }
+
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: mensaje
+            // parse_mode: "Markdown"  // opcional; mejor evitar si hay guiones bajos en códigos
+          })
+        });
+      } catch (e) {
+        console.warn("No se pudo notificar por Telegram (continuando):", e);
+      }
     }
+  </script>
 
-    await fetch(https://api.telegram.org/bot${token}/sendMessage, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: mensaje,
-        parse_mode: "Markdown"
-      })
-    });
-  }
-</script>
-
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
       authDomain: "inventariopv-643f1.firebaseapp.com",
       projectId: "inventariopv-643f1",
-      storageBucket: "inventariopv-643f1.firebasestorage.app",
+      storageBucket: "inventariopv-643f1.appspot.com", /* más común */
       messagingSenderId: "96242533231",
       appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
     };
@@ -239,71 +118,58 @@
     async function obtenerFolioDesdeFirebase() {
       const ref = db.collection("consecutivos").doc("salidas_zapata");
       const snap = await ref.get();
-      if (snap.exists) {
-        numeroFolio = snap.data().ultimo || 1;
-        folio = "PDDZAP - " + String(numeroFolio).padStart(4, "0");
-      } else {
-        numeroFolio = 1;
-        folio = "PDDZAP - 0001";
-      }
+      // Muestra el SIGUIENTE número disponible
+      numeroFolio = (snap.exists ? (snap.data().ultimo || 0) : 0) + 1;
+      folio = "PDDZAP - " + String(numeroFolio).padStart(4, "0");
       document.getElementById("folio").textContent = folio;
     }
+
     function imprimirYDescargar() {
-  const elemento = document.querySelector(".resumen");
-       // Asegura fondo blanco solo para captura
-  const originalBackground = elemento.style.background;
-  elemento.style.background = "white";
+      const elemento = document.querySelector(".resumen");
+      const originalBackground = elemento.style.background;
+      elemento.style.background = "white"; // asegura fondo blanco
 
-  html2canvas(elemento, { scale: 2 }).then(canvas => {
-    const link = document.createElement("a");
-    link.download = ${document.getElementById("folio").textContent || "salida"}.png;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      html2canvas(elemento, { scale: 2 }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `${document.getElementById("folio").textContent || "salida"}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
 
-    // Luego imprimir
-    setTimeout(() => {
-      window.print();
-    }, 500);
-  });
-}
+        setTimeout(() => {
+          window.print();
+          elemento.style.background = originalBackground; // restaurar
+        }, 500);
+      });
+    }
+
     async function guardarEnFirebase() {
-      await obtenerFolioDesdeFirebase(); // Asegura folio actualizado
+      await obtenerFolioDesdeFirebase(); // Asegura folio actualizado (siguiente disponible)
 
-      const fecha = localStorage.getItem("fecha") || "";
+      const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
       const entrega = localStorage.getItem("entrega") || "";
       const recibe = localStorage.getItem("recibe") || "";
       const destino = localStorage.getItem("destino") || "";
       const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
       const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
-      const articulos = JSON.parse(localStorage.getItem("carrito")) || [];
+      const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
 
       const salida = {
-        folio,
-        fecha,
-        entrega,
-        recibe,
-        destino,
-        firmaEntrega,
-        firmaRecibe,
-        articulos,
+        folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
         await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
-
-        // 🔁 Incrementa folio en Firebase
+        // Incrementa contador
         await db.collection("consecutivos").doc("salidas_zapata").update({
           ultimo: firebase.firestore.FieldValue.increment(1)
         });
+
         await notificarLobaZapata(salida);
-        localStorage.removeItem("carrito");
-localStorage.removeItem("firmaEntrega");
-localStorage.removeItem("firmaRecibe");
-localStorage.removeItem("fecha");
-localStorage.removeItem("entrega");
-localStorage.removeItem("recibe");
-localStorage.removeItem("destino");
+
+        // Limpia localStorage
+        ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
+          .forEach(k => localStorage.removeItem(k));
 
         window.print(); // Imprimir automáticamente
 
@@ -320,22 +186,24 @@ localStorage.removeItem("destino");
     document.addEventListener("DOMContentLoaded", async () => {
       await obtenerFolioDesdeFirebase();
 
-      document.getElementById('fecha').textContent = localStorage.getItem("resumenFecha") || "Sin fecha";
+      document.getElementById('fecha').textContent   = localStorage.getItem("resumenFecha") || "Sin fecha";
       document.getElementById('entrega').textContent = localStorage.getItem("entrega") || "No asignado";
-      document.getElementById('recibe').textContent = localStorage.getItem("recibe") || "No asignado";
-      document.getElementById('firmaEntrega').src = localStorage.getItem("firmaEntrega") || "";
-      document.getElementById('firmaRecibe').src = localStorage.getItem("firmaRecibe") || "";
+      document.getElementById('recibe').textContent  = localStorage.getItem("recibe") || "No asignado";
       document.getElementById('destino').textContent = localStorage.getItem("destino") || "NO DEFINIDO";
+      document.getElementById('firmaEntrega').src    = localStorage.getItem("firmaEntrega") || "";
+      document.getElementById('firmaRecibe').src     = localStorage.getItem("firmaRecibe") || "";
 
-      const lista = JSON.parse(localStorage.getItem("carrito")) || [];
+      const lista = JSON.parse(localStorage.getItem("carrito") || "[]");
       const ul = document.getElementById("lista-articulos");
       lista.forEach(p => {
         const li = document.createElement("li");
-        li.textContent = • ${p.cantidad} x ${p.nombre} (Código: ${p.codigo});
+        li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
         ul.appendChild(li);
       });
     });
   </script>
+
+  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
