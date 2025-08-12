@@ -5,245 +5,337 @@
   <title>Resumen de Salida</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; background: linear-gradient(to right, #00416A, #E4E5E6); color: white; padding: 20px; }
-    .firmas-vertical { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-    .firmas-vertical img { width: 100%; max-width: 240px; height: auto; background: white; border-radius: 5px; }
-
-    .resumen { background: white; border-radius: 10px; padding: 20px; max-width: 800px; margin: auto; color: black; }
-    h2 { text-align: center; margin-bottom: 20px; }
-
-    ul { list-style: none; padding: 0; margin: 10px 0; }
-    li { margin-bottom: 10px; background: white; color: black; padding: 10px; border-radius: 5px; }
-
-    button { display: block; margin: 30px auto 0; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; background: #007bff; color: white; cursor: pointer; }
-    button[disabled] { opacity: .7; cursor: not-allowed; }
-
-    @media print {
-      body { margin-top: 15px; margin-bottom: 15px; color: black !important; background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 14px; }
-      .resumen { width: 280px; margin: auto; padding: 5px 10px; font-size: 18px; background: white; color: black; }
-      .resumen * { color: black !important; background: none !important; }
-      .resumen h2 { margin-top: 10px; font-size: 15px; text-align: center; }
-      ul { padding-left: 10px; }
-      img { max-width: 100%; height: auto; filter: contrast(150%); }
-      .firmas-vertical { display: flex; flex-direction: column; align-items: center; margin-top: 20px; font-size: 12px; }
-      .firmas-vertical div { margin-bottom: 20px; width: 100%; text-align: center; }
-      .firmas-vertical img { width: 90%; max-width: 250px; height: 60px; border: 1px solid #000; border-radius: 4px; filter: contrast(180%) brightness(1.2); }
-      button, .no-print { display: none !important; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #00416A, #E4E5E6);
+      color: white;
+      padding: 20px;
     }
+    .firmas-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.firmas-vertical img {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  background: white;
+  border-radius: 5px;
+}
+
+    .resumen {
+     background: white; /* 👈 cambia esto */
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      color: black; /* para asegurar contraste */
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .firmas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .firmas div {
+      width: 45%;
+      text-align: center;
+    }
+
+    .firmas img {
+      max-width: 100%;
+      height: 100px;
+      background: white;
+      border-radius: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+  button {
+  display: block;
+  margin: 30px auto 0;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: green;
+  color: white;
+  cursor: pointer;
+}
+ @media print {
+  body {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: black !important;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 14px;
+  }
+
+  .resumen {
+    width: 280px; /* para impresora 58mm */
+    margin: auto;
+    padding: 5px 10px;
+    font-size: 18px;
+    background: white;
+    color: black;
+  }
+     .resumen * {
+    color: black !important;
+    background: none !important;
+  }
+    .resumen h2 {
+    margin-top: 10px;
+    font-size: 15px;
+    text-align: center;
+  }
+
+ ul {
+    padding-left: 10px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    filter: contrast(150%);
+  }
+
+  .firmas-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+
+  .firmas-vertical div {
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .firmas-vertical img {
+    width: 90%;
+    max-width: 250px;
+    height: 60px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    filter: contrast(180%) brightness(1.2);
+  }
+
+  button,
+  .no-print {
+    display: none !important;
+  }
+}
   </style>
 </head>
 <body>
 
-  <div class="resumen" id="resumen">
+  <div class="resumen">
     <h2>📋 Resumen de salida</h2>
     <p><strong>Folio:</strong> <span id="folio">Cargando...</span></p>
-    <p><strong>Fecha:</strong> <span id="fecha">—</span></p>
-    <p><strong>Entrega:</strong> <span id="entrega">—</span></p>
-    <p><strong>Recibe:</strong> <span id="recibe">—</span></p>
-    <p><strong>Destino:</strong> <span id="destino">—</span></p>
+    <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+    <p><strong>Entrega:</strong> <span id="entrega"></span></p>
+    <p><strong>Recibe:</strong> <span id="recibe"></span></p>
+    <p><strong>Destino:</strong> <span id="destino"></span></p>
 
     <h3>🛒 Artículos:</h3>
     <ul id="lista-articulos"></ul>
 
     <div class="firmas-vertical">
-      <div>
-        <p>Firma quien entrega</p>
-        <img id="firmaEntrega" src="" alt="Firma entrega">
-      </div>
-      <div style="margin-top: 30px;">
-        <p>Firma quien recibe</p>
-        <img id="firmaRecibe" src="" alt="Firma recibe">
-      </div>
-    </div>
+  <div>
+    <p>Firma quien entrega</p>
+    <img id="firmaEntrega" src="" alt="Firma entrega">
   </div>
+  <div style="margin-top: 30px;">
+    <p>Firma quien recibe</p>
+    <img id="firmaRecibe" src="" alt="Firma recibe">
+  </div>
+</div>
 
-  <!-- ÚNICO BOTÓN -->
-  <button id="btn-unico" class="no-print" onclick="guardarDescargarImprimir()">💾🖨️ Guardar, descargar e imprimir</button>
+    <button class="no-print" onclick="imprimirYDescargar()" style="background-color: #28a745; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
+  🖨️ Imprimir y Descargar
+</button>
+
+
+  <button class="no-print" onclick="guardarEnFirebase()" style="background-color: #007bff; color: white; padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; display: block; margin: 30px auto;">
+    💾 Guardar salida
+  </button>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script>
-    // ============ Helpers ============
-    const L = {
-      get: (k, fallback = "") => {
-        const v = localStorage.getItem(k);
-        if (v !== null && v !== undefined && v !== "") return v;
-        const s = sessionStorage.getItem(k);
-        return (s !== null && s !== undefined && s !== "") ? s : fallback;
-      },
-      getJSON: (k) => {
-        try {
-          const v = localStorage.getItem(k) ?? sessionStorage.getItem(k);
-          return v ? JSON.parse(v) : null;
-        } catch { return null; }
-      },
-      delMany: (arr) => arr.forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); })
-    };
+  async function notificarLobaZapata(salida) {
+    const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
+    const chatId = "6617988297";
 
-    // ⚠️ Ideal mover a backend para no exponer token
-    async function notificarLobaZapata(salida) {
-      try {
-        const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
-        const chatId = "6617988297";
-        let mensaje = `🚨 Nueva salida registrada en Almacén Zapata\n\n`;
-        mensaje += `📄 Folio: ${salida.folio}\n`;
-        mensaje += `📅 Fecha: ${salida.fecha}\n`;
-        mensaje += `👤 Entrega: ${salida.entrega}\n`;
-        mensaje += `🤝 Recibe: ${salida.recibe}\n`;
-        mensaje += `📍 Destino: ${salida.destino}\n\n`;
-        if (Array.isArray(salida.articulos) && salida.articulos.length > 0) {
-          mensaje += `📦 Artículos:\n`;
-          salida.articulos.forEach(p => { mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`; });
-        } else {
-          mensaje += `⚠️ No hay artículos registrados.\n`;
-        }
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: chatId, text: mensaje })
-        });
-      } catch (e) { console.warn("No se pudo notificar por Telegram:", e); }
+    let mensaje = 🚨 *Nueva salida registrada en Almacén Zapata*\n\n;
+    mensaje += 📄 *Folio:* ${salida.folio}\n;
+    mensaje += 📅 *Fecha:* ${salida.fecha}\n;
+    mensaje += 👤 *Entrega:* ${salida.entrega}\n;
+    mensaje += 🤝 *Recibe:* ${salida.recibe}\n;
+    mensaje += 📍 *Destino:* ${salida.destino}\n\n;
+
+    if (salida.articulos.length > 0) {
+      mensaje += 📦 *Artículos:*\n;
+      salida.articulos.forEach(p => {
+        mensaje += • ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n;
+      });
+    } else {
+      mensaje += ⚠️ No hay artículos registrados.\n;
     }
 
-    // --- Firebase ---
+    await fetch(https://api.telegram.org/bot${token}/sendMessage, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: mensaje,
+        parse_mode: "Markdown"
+      })
+    });
+  }
+</script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
       authDomain: "inventariopv-643f1.firebaseapp.com",
       projectId: "inventariopv-643f1",
-      storageBucket: "inventariopv-643f1.appspot.com",
+      storageBucket: "inventariopv-643f1.firebasestorage.app",
       messagingSenderId: "96242533231",
       appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let folio = "PDDZAP - PENDIENTE";
+    let folio = "";
+    let numeroFolio = 0;
 
-    // Solo vista previa del siguiente folio (no bloquea)
-    async function previsualizarProximoFolio() {
-      try {
-        const ref = db.collection("consecutivos").doc("salidas_zapata");
-        const snap = await ref.get();
-        const next = (snap.exists ? Number(snap.data().ultimo) || 0 : 0) + 1;
-        folio = "PDDZAP - " + String(next).padStart(4, "0");
-      } catch (e) {
-        console.warn("No se pudo leer folio (muestra PENDIENTE).", e);
-        folio = "PDDZAP - PENDIENTE";
-      } finally {
-        document.getElementById("folio").textContent = folio;
-      }
-    }
-
-    // Bloquea y genera folio con transacción
-    async function generarFolioTransaccion() {
+    async function obtenerFolioDesdeFirebase() {
       const ref = db.collection("consecutivos").doc("salidas_zapata");
-      const next = await db.runTransaction(async (tx) => {
-        const doc = await tx.get(ref);
-        const ultimo = doc.exists ? (Number(doc.data().ultimo) || 0) : 0;
-        const siguiente = ultimo + 1;
-        tx.set(ref, { ultimo: siguiente }, { merge: true });
-        return siguiente;
-      });
-      return "PDDZAP - " + String(next).padStart(4, "0");
+      const snap = await ref.get();
+      if (snap.exists) {
+        numeroFolio = snap.data().ultimo || 1;
+        folio = "PDDZAP - " + String(numeroFolio).padStart(4, "0");
+      } else {
+        numeroFolio = 1;
+        folio = "PDDZAP - 0001";
+      }
+      document.getElementById("folio").textContent = folio;
     }
+    function imprimirYDescargar() {
+  const elemento = document.querySelector(".resumen");
+       // Asegura fondo blanco solo para captura
+  const originalBackground = elemento.style.background;
+  elemento.style.background = "white";
 
-    async function descargarPNGyImprimir(nombreArchivo = "salida") {
-      const elemento = document.getElementById("resumen");
-      const originalBg = elemento.style.background;
-      elemento.style.background = "white";
-      const canvas = await html2canvas(elemento, { scale: 2, backgroundColor: "#ffffff" });
-      const link = document.createElement("a");
-      link.download = `${nombreArchivo}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-      setTimeout(() => { window.print(); elemento.style.background = originalBg; }, 400);
-    }
+  html2canvas(elemento, { scale: 2 }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = ${document.getElementById("folio").textContent || "salida"}.png;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
 
-    async function guardarDescargarImprimir() {
-      const btn = document.getElementById("btn-unico");
-      btn.disabled = true; const oldText = btn.textContent; btn.textContent = "Procesando...";
+    // Luego imprimir
+    setTimeout(() => {
+      window.print();
+    }, 500);
+  });
+}
+    async function guardarEnFirebase() {
+      await obtenerFolioDesdeFirebase(); // Asegura folio actualizado
+
+      const fecha = localStorage.getItem("fecha") || "";
+      const entrega = localStorage.getItem("entrega") || "";
+      const recibe = localStorage.getItem("recibe") || "";
+      const destino = localStorage.getItem("destino") || "";
+      const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
+      const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
+      const articulos = JSON.parse(localStorage.getItem("carrito")) || [];
+
+      const salida = {
+        folio,
+        fecha,
+        entrega,
+        recibe,
+        destino,
+        firmaEntrega,
+        firmaRecibe,
+        articulos,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
       try {
-        // 0) Cargar artículos desde storage
-        const articulos = L.getJSON("carrito") || [];
-        if (!Array.isArray(articulos) || articulos.length === 0) {
-          alert("⚠️ No hay artículos en el resumen. Vuelve a la pantalla anterior y agrega productos.");
-          return;
-        }
-
-        // 1) Folio con transacción
-        folio = await generarFolioTransaccion();
-        document.getElementById("folio").textContent = folio;
-
-        // 2) Datos
-        const fecha = L.get("resumenFecha", L.get("fecha", new Date().toLocaleString("es-MX")));
-        const salida = {
-          folio,
-          fecha,
-          entrega: L.get("entrega", ""),
-          recibe:  L.get("recibe",  ""),
-          destino: L.get("destino", "NO DEFINIDO"),
-          firmaEntrega: L.get("firmaEntrega", ""),
-          firmaRecibe:  L.get("firmaRecibe",  ""),
-          articulos,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        // 3) Guardar
         await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
 
-        // 4) Descargar PNG e imprimir
-        await descargarPNGyImprimir(folio);
+        // 🔁 Incrementa folio en Firebase
+        await db.collection("consecutivos").doc("salidas_zapata").update({
+          ultimo: firebase.firestore.FieldValue.increment(1)
+        });
+        await notificarLobaZapata(salida);
+        localStorage.removeItem("carrito");
+localStorage.removeItem("firmaEntrega");
+localStorage.removeItem("firmaRecibe");
+localStorage.removeItem("fecha");
+localStorage.removeItem("entrega");
+localStorage.removeItem("recibe");
+localStorage.removeItem("destino");
 
-        // 5) Notificar (no bloquea)
-        notificarLobaZapata(salida);
+        window.print(); // Imprimir automáticamente
 
-        // 6) Limpia y redirige
-        L.delMany(["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]);
         setTimeout(() => {
-          alert("✅ Salida guardada, descargada e impresa correctamente.");
+          alert("✅ Salida guardada e impresa correctamente.");
           window.location.href = "./index.html";
-        }, 2500);
-
+        }, 3000);
       } catch (error) {
-        console.error("Error en el proceso:", error);
-        alert("❌ Ocurrió un error al guardar/imprimir. Revisa la consola.");
-      } finally {
-        btn.disabled = false; btn.textContent = oldText;
+        console.error("Error al guardar:", error);
+        alert("❌ Error al guardar la salida.");
       }
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-      await previsualizarProximoFolio();
+      await obtenerFolioDesdeFirebase();
 
-      // Carga segura de datos (desde localStorage o sessionStorage)
-      const fechaTxt = L.get("resumenFecha", L.get("fecha", "Sin fecha"));
-      document.getElementById('fecha').textContent   = fechaTxt;
-      document.getElementById('entrega').textContent = L.get("entrega", "No asignado");
-      document.getElementById('recibe').textContent  = L.get("recibe",  "No asignado");
-      document.getElementById('destino').textContent = L.get("destino", "NO DEFINIDO");
-      document.getElementById('firmaEntrega').src    = L.get("firmaEntrega", "");
-      document.getElementById('firmaRecibe').src     = L.get("firmaRecibe",  "");
+      document.getElementById('fecha').textContent = localStorage.getItem("resumenFecha") || "Sin fecha";
+      document.getElementById('entrega').textContent = localStorage.getItem("entrega") || "No asignado";
+      document.getElementById('recibe').textContent = localStorage.getItem("recibe") || "No asignado";
+      document.getElementById('firmaEntrega').src = localStorage.getItem("firmaEntrega") || "";
+      document.getElementById('firmaRecibe').src = localStorage.getItem("firmaRecibe") || "";
+      document.getElementById('destino').textContent = localStorage.getItem("destino") || "NO DEFINIDO";
 
-      const lista = L.getJSON("carrito") || [];
+      const lista = JSON.parse(localStorage.getItem("carrito")) || [];
       const ul = document.getElementById("lista-articulos");
-      ul.innerHTML = "";
-      if (!Array.isArray(lista) || lista.length === 0) {
+      lista.forEach(p => {
         const li = document.createElement("li");
-        li.textContent = "— Sin artículos agregados —";
+        li.textContent = • ${p.cantidad} x ${p.nombre} (Código: ${p.codigo});
         ul.appendChild(li);
-      } else {
-        lista.forEach(p => {
-          const li = document.createElement("li");
-          li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
-          ul.appendChild(li);
-        });
-      }
+      });
     });
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
