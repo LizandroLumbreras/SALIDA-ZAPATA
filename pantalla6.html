@@ -124,65 +124,66 @@
       document.getElementById("folio").textContent = folio;
     }
 
-    function imprimirYDescargar() {
-      const elemento = document.querySelector(".resumen");
-      const originalBackground = elemento.style.background;
-      elemento.style.background = "white"; // asegura fondo blanco
+  function imprimirYDescargar() {
+    const elemento = document.querySelector(".resumen");
+    const originalBackground = elemento.style.background;
+    elemento.style.background = "white"; // asegura fondo blanco
 
-      html2canvas(elemento, { scale: 2 }).then(canvas => {
-        const link = document.createElement("a");
-        link.download = `${document.getElementById("folio").textContent || "salida"}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+    html2canvas(elemento, { scale: 2 }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `${document.getElementById("folio").textContent || "salida"}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
 
-        setTimeout(() => {
-          window.print();
-          elemento.style.background = originalBackground; // restaurar
-        }, 500);
+      // Aquí sí imprime
+      setTimeout(() => {
+        window.print();
+        elemento.style.background = originalBackground; // restaurar
+      }, 500);
+    });
+  }
+
+  async function guardarEnFirebase() {
+    await obtenerFolioDesdeFirebase(); // Asegura folio actualizado (siguiente disponible)
+
+    const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
+    const entrega = localStorage.getItem("entrega") || "";
+    const recibe = localStorage.getItem("recibe") || "";
+    const destino = localStorage.getItem("destino") || "";
+    const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
+    const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
+    const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
+
+    const salida = {
+      folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+      // Guarda la salida
+      await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
+
+      // Incrementa consecutivo
+      await db.collection("consecutivos").doc("salidas_zapata").update({
+        ultimo: firebase.firestore.FieldValue.increment(1)
       });
+
+      // Notifica por Telegram (opcional)
+      await notificarLobaZapata(salida);
+
+      // Limpia localStorage
+      ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
+        .forEach(k => localStorage.removeItem(k));
+
+      // ✅ Solo confirmar y redirigir – SIN imprimir
+      alert("✅ Salida guardada correctamente.");
+      window.location.href = "./index.html";
+
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("❌ Error al guardar la salida.");
     }
-
-    async function guardarEnFirebase() {
-      await obtenerFolioDesdeFirebase(); // Asegura folio actualizado (siguiente disponible)
-
-      const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
-      const entrega = localStorage.getItem("entrega") || "";
-      const recibe = localStorage.getItem("recibe") || "";
-      const destino = localStorage.getItem("destino") || "";
-      const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
-      const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
-      const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
-
-      const salida = {
-        folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
-      try {
-        await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
-        // Incrementa contador
-        await db.collection("consecutivos").doc("salidas_zapata").update({
-          ultimo: firebase.firestore.FieldValue.increment(1)
-        });
-
-        await notificarLobaZapata(salida);
-
-        // Limpia localStorage
-        ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
-          .forEach(k => localStorage.removeItem(k));
-
-        window.print(); // Imprimir automáticamente
-
-        setTimeout(() => {
-          alert("✅ Salida guardada e impresa correctamente.");
-          window.location.href = "./index.html";
-        }, 3000);
-      } catch (error) {
-        console.error("Error al guardar:", error);
-        alert("❌ Error al guardar la salida.");
-      }
-    }
-
+  }
     document.addEventListener("DOMContentLoaded", async () => {
       await obtenerFolioDesdeFirebase();
 
@@ -207,3 +208,4 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
