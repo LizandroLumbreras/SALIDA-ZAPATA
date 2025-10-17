@@ -143,47 +143,96 @@
     });
   }
 
-  async function guardarEnFirebase() {
-    await obtenerFolioDesdeFirebase(); // Asegura folio actualizado (siguiente disponible)
+async function guardarEnFirebase() {
+  await obtenerFolioDesdeFirebase(); // Asegura folio actualizado
 
-    const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
-    const entrega = localStorage.getItem("entrega") || "";
-    const recibe = localStorage.getItem("recibe") || "";
-    const destino = localStorage.getItem("destino") || "";
-    const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
-    const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
-    const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
+  const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
+  const entrega = localStorage.getItem("entrega") || "";
+  const recibe = localStorage.getItem("recibe") || "";
+  const destino = localStorage.getItem("destino") || "";
+  const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
+  const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
+  const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
 
-    const salida = {
-      folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    };
+  const salida = {
+    folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
 
-    try {
-      // Guarda la salida
-      await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
+  try {
+    // Guarda la salida normal
+    await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
 
-      // Incrementa consecutivo
-      await db.collection("consecutivos").doc("salidas_zapata").update({
-        ultimo: firebase.firestore.FieldValue.increment(1)
-      });
+    // Incrementa consecutivo
+    await db.collection("consecutivos").doc("salidas_zapata").update({
+      ultimo: firebase.firestore.FieldValue.increment(1)
+    });
 
-      // Notifica por Telegram (opcional)
-      await notificarLobaZapata(salida);
+    // === 🔍 BLOQUE DE VERIFICACIÓN DE INVENTARIO ===
+    const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
+    const chatId = "6617988297";
 
-      // Limpia localStorage
-      ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
-        .forEach(k => localStorage.removeItem(k));
+    for (const art of articulos) {
+      try {
+        const q = await db.collection("seguimiento_inventario")
+          .where("codigo", "==", art.codigo)
+          .get();
 
-      // ✅ Solo confirmar y redirigir – SIN imprimir
-      alert("✅ Salida guardada correctamente.");
-      window.location.href = "./index.html";
+        if (!q.empty) {
+          q.forEach(async (docu) => {
+            const data = docu.data();
+            const ref = db.collection("seguimiento_inventario").doc(docu.id);
+            const nuevaExistencia = (data.existencia_actual || 0) - art.cantidad;
 
-    } catch (error) {
-      console.error("Error al guardar:", error);
-      alert("❌ Error al guardar la salida.");
+            await ref.update({
+              existencia_actual: nuevaExistencia,
+              ultima_salida: new Date().toISOString()
+            });
+
+            // Siempre manda mensaje — verde o rojo
+            const estado = nuevaExistencia <= data.alerta_minima ? "⚠️ *BAJO STOCK*" : "✅ *Stock actualizado*";
+            const mensaje = `
+${estado}
+📦 ${data.descripcion || art.nombre}
+🆔 Código: ${art.codigo}
+🏠 Almacén: Zapata
+📉 Existencia actual: ${nuevaExistencia}
+🔢 Mínimo definido: ${data.alerta_minima}
+📅 Fecha: ${new Date().toLocaleString("es-MX")}
+            `;
+
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: mensaje,
+                parse_mode: "Markdown"
+              })
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Error en seguimiento:", err);
+      }
     }
+    // ===============================================
+
+    // Notifica salida general (la que ya tenías)
+    await notificarLobaZapata(salida);
+
+    // Limpia localStorage
+    ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
+      .forEach(k => localStorage.removeItem(k));
+
+    alert("✅ Salida guardada correctamente.");
+    window.location.href = "./index.html";
+
+  } catch (error) {
+    console.error("Error al guardar:", error);
+    alert("❌ Error al guardar la salida.");
   }
+}
     document.addEventListener("DOMContentLoaded", async () => {
       await obtenerFolioDesdeFirebase();
 
@@ -208,4 +257,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
 
