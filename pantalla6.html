@@ -186,17 +186,17 @@ async function guardarEnFirebase() {
             const data = docu.data();
             const ref = db.collection("seguimiento_inventario").doc(docu.id);
 
-            const inventarioActual = parseInt(data.inventario_fijado || 0);
-            const inventarioMinimo = parseInt(data.inventario_minimo || 0);
-            const cantidadSalida = parseInt(art.cantidad || 0);
-            const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
+const inventarioActual = parseInt(data.inventario_fijado || 0);
+const inventarioMinimo = parseInt(data.inventario_minimo || 0);
+const cantidadSalida = parseInt(art.cantidad || 0);
+const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
 
-            // 🔄 Actualiza el inventario
-            await ref.update({
-              inventario_fijado: nuevoInventario,
-              actualizadoEn: new Date().toISOString(),
-              ultima_salida: new Date().toISOString()
-            });
+await ref.update({
+  inventario_fijado: nuevoInventario,
+  actualizadoEn: new Date().toISOString(),
+  ultima_salida: new Date().toISOString()
+});
+
 
             const esBajo = nuevoInventario <= inventarioMinimo;
             let mensaje = "";
@@ -290,6 +290,7 @@ async function guardarEnFirebase() {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
 
 
 
