@@ -164,9 +164,10 @@ async function guardarEnFirebase() {
     await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
 
     // ✅ 2. Incrementa consecutivo
-    await db.collection("consecutivos").doc("salidas_zapata").update({
-      ultimo: firebase.firestore.FieldValue.increment(1)
-    });
+await db.collection("consecutivos").doc("salidas_zapata").set({
+  ultimo: firebase.firestore.FieldValue.increment(1)
+}, { merge: true });
+
 
     // ✅ 3. Verificación de inventario en la misma app
     const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
@@ -290,6 +291,7 @@ await ref.update({
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
 
 
 
