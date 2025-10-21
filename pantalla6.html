@@ -160,47 +160,76 @@ async function guardarEnFirebase() {
   };
 
   try {
-    // Guarda la salida normal
+    // ✅ 1. Guarda la salida normal
     await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
 
-    // Incrementa consecutivo
+    // ✅ 2. Incrementa consecutivo
     await db.collection("consecutivos").doc("salidas_zapata").update({
       ultimo: firebase.firestore.FieldValue.increment(1)
     });
 
-    // === 🔍 BLOQUE DE VERIFICACIÓN DE INVENTARIO ===
+    // ✅ 3. Verificación de inventario en la misma app
     const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
     const chatId = "6617988297";
+
+    console.log("🔎 Ejecutando verificación de inventario...");
 
     for (const art of articulos) {
       try {
         const q = await db.collection("seguimiento_inventario")
-          .where("codigo", "==", art.codigo)
+          .where("codigoBarra", "==", art.codigo)
+          .where("activo", "==", true)
           .get();
 
         if (!q.empty) {
           q.forEach(async (docu) => {
             const data = docu.data();
             const ref = db.collection("seguimiento_inventario").doc(docu.id);
-            const nuevaExistencia = (data.existencia_actual || 0) - art.cantidad;
 
+            const inventarioActual = parseInt(data.inventario_fijado || 0);
+            const inventarioMinimo = parseInt(data.inventario_minimo || 0);
+            const cantidadSalida = parseInt(art.cantidad || 0);
+            const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
+
+            // 🔄 Actualiza el inventario
             await ref.update({
-              existencia_actual: nuevaExistencia,
+              inventario_fijado: nuevoInventario,
+              actualizadoEn: new Date().toISOString(),
               ultima_salida: new Date().toISOString()
             });
 
-            // Siempre manda mensaje — verde o rojo
-            const estado = nuevaExistencia <= data.alerta_minima ? "⚠️ *BAJO STOCK*" : "✅ *Stock actualizado*";
-            const mensaje = `
-${estado}
-📦 ${data.descripcion || art.nombre}
-🆔 Código: ${art.codigo}
-🏠 Almacén: Zapata
-📉 Existencia actual: ${nuevaExistencia}
-🔢 Mínimo definido: ${data.alerta_minima}
-📅 Fecha: ${new Date().toLocaleString("es-MX")}
-            `;
+            const esBajo = nuevoInventario <= inventarioMinimo;
+            let mensaje = "";
 
+            if (esBajo) {
+              mensaje = `
+🔥🔥🔥 *ALERTA MÁXIMA DE INVENTARIO* 🔥🔥🔥
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+💀 *¡STOCK CRÍTICO DETECTADO!* 💀
+📦 ${data.concepto || art.nombre}
+🆔 Código: ${data.codigoBarra}
+📉 Salida reciente: ${cantidadSalida}
+📦 Existencia actual: ${nuevoInventario} unidades
+🔢 Mínimo definido: ${inventarioMinimo}
+🏠 Almacén: Zapata
+📅 ${new Date().toLocaleString("es-MX")}
+⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
+🚒🔥💣🚨💥🧯🔥💥🚨💣🔥🚒
+              `;
+            } else {
+              mensaje = `
+✅ *Inventario actualizado correctamente*
+📦 ${data.concepto || art.nombre}
+🆔 Código: ${data.codigoBarra}
+📉 Salida reciente: ${cantidadSalida}
+📦 Existencia actual: ${nuevoInventario}
+🔢 Mínimo definido: ${inventarioMinimo}
+🏠 Almacén: Zapata
+📅 ${new Date().toLocaleString("es-MX")}
+              `;
+            }
+
+            // 💬 Enviar mensaje a Telegram
             await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -210,22 +239,25 @@ ${estado}
                 parse_mode: "Markdown"
               })
             });
+
+            console.log(`✅ ${data.codigoBarra} actualizado (${nuevoInventario})`);
           });
+        } else {
+          console.log(`ℹ️ Código ${art.codigo} no está fijado en seguimiento_inventario.`);
         }
       } catch (err) {
-        console.error("Error en seguimiento:", err);
+        console.error("❌ Error en verificación de inventario:", err);
       }
     }
-    // ===============================================
 
-    // Notifica salida general (la que ya tenías)
+    // ✅ 4. Notificación general de salida
     await notificarLobaZapata(salida);
 
-    // Limpia localStorage
+    // ✅ 5. Limpieza
     ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
       .forEach(k => localStorage.removeItem(k));
 
-    alert("✅ Salida guardada correctamente.");
+    alert("✅ Salida guardada y verificada correctamente.");
     window.location.href = "./index.html";
 
   } catch (error) {
@@ -233,6 +265,7 @@ ${estado}
     alert("❌ Error al guardar la salida.");
   }
 }
+
     document.addEventListener("DOMContentLoaded", async () => {
       await obtenerFolioDesdeFirebase();
 
@@ -257,5 +290,6 @@ ${estado}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
+
 
 
