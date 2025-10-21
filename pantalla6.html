@@ -61,238 +61,174 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    // ⚠️ Ideal mover este envío a backend para no exponer el token
-    async function notificarLobaZapata(salida) {
-      try {
-        const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
-        const chatId = "6617988297";
+  async function notificarLobaZapata(salida) {
+    try {
+      const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
+      const chatId = "6617988297";
 
-        let mensaje = `🚨 Nueva salida registrada en Almacén Zapata\n\n`;
-        mensaje += `📄 Folio: ${salida.folio}\n`;
-        mensaje += `📅 Fecha: ${salida.fecha}\n`;
-        mensaje += `👤 Entrega: ${salida.entrega}\n`;
-        mensaje += `🤝 Recibe: ${salida.recibe}\n`;
-        mensaje += `📍 Destino: ${salida.destino}\n\n`;
+      let mensaje = `🚨 Nueva salida registrada en Almacén Zapata\n\n`;
+      mensaje += `📄 Folio: ${salida.folio}\n📅 Fecha: ${salida.fecha}\n👤 Entrega: ${salida.entrega}\n🤝 Recibe: ${salida.recibe}\n📍 Destino: ${salida.destino}\n\n`;
 
-        if (Array.isArray(salida.articulos) && salida.articulos.length > 0) {
-          mensaje += `📦 Artículos:\n`;
-          salida.articulos.forEach(p => {
-            mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`;
-          });
-        } else {
-          mensaje += `⚠️ No hay artículos registrados.\n`;
-        }
-
-        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: mensaje
-            // parse_mode: "Markdown"  // opcional; mejor evitar si hay guiones bajos en códigos
-          })
+      if (Array.isArray(salida.articulos) && salida.articulos.length > 0) {
+        mensaje += `📦 Artículos:\n`;
+        salida.articulos.forEach(p => {
+          mensaje += `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})\n`;
         });
-      } catch (e) {
-        console.warn("No se pudo notificar por Telegram (continuando):", e);
+      } else {
+        mensaje += `⚠️ No hay artículos registrados.\n`;
       }
+
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: mensaje })
+      });
+    } catch (e) {
+      console.warn("No se pudo notificar por Telegram:", e);
     }
+  }
   </script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
-      authDomain: "inventariopv-643f1.firebaseapp.com",
-      projectId: "inventariopv-643f1",
-      storageBucket: "inventariopv-643f1.appspot.com", /* más común */
-      messagingSenderId: "96242533231",
-      appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  const firebaseConfig = {
+    apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
+    authDomain: "inventariopv-643f1.firebaseapp.com",
+    projectId: "inventariopv-643f1",
+    storageBucket: "inventariopv-643f1.appspot.com",
+    messagingSenderId: "96242533231",
+    appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    let folio = "";
-    let numeroFolio = 0;
+  let folio = "";
+  let numeroFolio = 0;
 
-    async function obtenerFolioDesdeFirebase() {
-      const ref = db.collection("consecutivos").doc("salidas_zapata");
-      const snap = await ref.get();
-      // Muestra el SIGUIENTE número disponible
-      numeroFolio = (snap.exists ? (snap.data().ultimo || 0) : 0) + 1;
-      folio = "PDDZAP - " + String(numeroFolio).padStart(4, "0");
-      document.getElementById("folio").textContent = folio;
-    }
+  async function obtenerFolioDesdeFirebase() {
+    const ref = db.collection("consecutivos").doc("salidas_zapata");
+    const snap = await ref.get();
+    numeroFolio = (snap.exists ? (snap.data().ultimo || 0) : 0) + 1;
+    folio = "PDDZAP - " + String(numeroFolio).padStart(4, "0");
+    document.getElementById("folio").textContent = folio;
+  }
 
   function imprimirYDescargar() {
     const elemento = document.querySelector(".resumen");
     const originalBackground = elemento.style.background;
-    elemento.style.background = "white"; // asegura fondo blanco
-
+    elemento.style.background = "white";
     html2canvas(elemento, { scale: 2 }).then(canvas => {
       const link = document.createElement("a");
       link.download = `${document.getElementById("folio").textContent || "salida"}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
-
-      // Aquí sí imprime
       setTimeout(() => {
         window.print();
-        elemento.style.background = originalBackground; // restaurar
+        elemento.style.background = originalBackground;
       }, 500);
     });
   }
 
-async function guardarEnFirebase() {
-  await obtenerFolioDesdeFirebase(); // Asegura folio actualizado
+  async function guardarEnFirebase() {
+    await obtenerFolioDesdeFirebase();
 
-  const fecha = localStorage.getItem("resumenFecha") || localStorage.getItem("fecha") || new Date().toLocaleString("es-MX");
-  const entrega = localStorage.getItem("entrega") || "";
-  const recibe = localStorage.getItem("recibe") || "";
-  const destino = localStorage.getItem("destino") || "";
-  const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
-  const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
-  const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
+    const fecha = localStorage.getItem("resumenFecha") || new Date().toLocaleString("es-MX");
+    const entrega = localStorage.getItem("entrega") || "";
+    const recibe = localStorage.getItem("recibe") || "";
+    const destino = localStorage.getItem("destino") || "";
+    const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
+    const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
+    const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
 
-  const salida = {
-    folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  };
+    const salida = { folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
 
-  try {
-    // ✅ 1. Guarda la salida normal
-    await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
+    try {
+      await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
+      await db.collection("consecutivos").doc("salidas_zapata").set({ ultimo: firebase.firestore.FieldValue.increment(1) }, { merge: true });
 
-    // ✅ 2. Incrementa consecutivo
-await db.collection("consecutivos").doc("salidas_zapata").set({
-  ultimo: firebase.firestore.FieldValue.increment(1)
-}, { merge: true });
+      for (const art of articulos) {
+        try {
+          const q = await db.collection("seguimiento_inventario")
+            .where("codigoBarra", "==", art.codigo)
+            .where("activo", "==", true)
+            .get();
 
+          if (!q.empty) {
+            q.forEach(async (docu) => {
+              const data = docu.data();
+              const ref = db.collection("seguimiento_inventario").doc(docu.id);
 
-    // ✅ 3. Verificación de inventario en la misma app
-    const token = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
-    const chatId = "6617988297";
+              const cantidadSalida = Math.abs(Number(String(art.cantidad).replace(/[^0-9.-]/g, ''))) || 0;
+              const inventarioActual = Math.abs(Number(data.inventario_fijado)) || 0;
+              const inventarioMinimo = Math.abs(Number(data.inventario_minimo)) || 0;
+              const nuevoInventario = inventarioActual >= cantidadSalida ? inventarioActual - cantidadSalida : 0;
 
-    console.log("🔎 Ejecutando verificación de inventario...");
+              await ref.update({
+                inventario_fijado: nuevoInventario,
+                actualizadoEn: new Date().toISOString(),
+                ultima_salida: new Date().toISOString()
+              });
 
-    for (const art of articulos) {
-      try {
-        const q = await db.collection("seguimiento_inventario")
-          .where("codigoBarra", "==", art.codigo)
-          .where("activo", "==", true)
-          .get();
-
-        if (!q.empty) {
-          q.forEach(async (docu) => {
-            const data = docu.data();
-            const ref = db.collection("seguimiento_inventario").doc(docu.id);
-
-const inventarioActual = parseInt(data.inventario_fijado || 0);
-const inventarioMinimo = parseInt(data.inventario_minimo || 0);
-const cantidadSalida = parseInt(art.cantidad || 0);
-const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
-
-await ref.update({
-  inventario_fijado: nuevoInventario,
-  actualizadoEn: new Date().toISOString(),
-  ultima_salida: new Date().toISOString()
-});
-
-
-            const esBajo = nuevoInventario <= inventarioMinimo;
-            let mensaje = "";
-
-            if (esBajo) {
-              mensaje = `
+              const esBajo = nuevoInventario <= inventarioMinimo;
+              let mensaje = esBajo ? `
 🔥🔥🔥 *ALERTA MÁXIMA DE INVENTARIO* 🔥🔥🔥
-🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 💀 *¡STOCK CRÍTICO DETECTADO!* 💀
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
-📉 Salida reciente: ${cantidadSalida}
-📦 Existencia actual: ${nuevoInventario} unidades
+📉 Existencia actual: ${nuevoInventario}
 🔢 Mínimo definido: ${inventarioMinimo}
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
 ⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
-🚒🔥💣🚨💥🧯🔥💥🚨💣🔥🚒
-              `;
-            } else {
-              mensaje = `
+🚒🔥💣🚨💥🧯🔥💥🚨💣🔥🚒`
+              : `
 ✅ *Inventario actualizado correctamente*
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
-📉 Salida reciente: ${cantidadSalida}
-📦 Existencia actual: ${nuevoInventario}
+📉 Existencia actual: ${nuevoInventario}
 🔢 Mínimo definido: ${inventarioMinimo}
 🏠 Almacén: Zapata
-📅 ${new Date().toLocaleString("es-MX")}
-              `;
-            }
+📅 ${new Date().toLocaleString("es-MX")}`;
 
-            // 💬 Enviar mensaje a Telegram
-            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: chatId,
-                text: mensaje,
-                parse_mode: "Markdown"
-              })
+              await fetch(`https://api.telegram.org/bot8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: "6617988297", text: mensaje, parse_mode: "Markdown" })
+              });
             });
-
-            console.log(`✅ ${data.codigoBarra} actualizado (${nuevoInventario})`);
-          });
-        } else {
-          console.log(`ℹ️ Código ${art.codigo} no está fijado en seguimiento_inventario.`);
-        }
-      } catch (err) {
-        console.error("❌ Error en verificación de inventario:", err);
+          } else console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
+        } catch (err) { console.error("❌ Error en verificación de inventario:", err); }
       }
+
+      await notificarLobaZapata(salida);
+      ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"].forEach(k => localStorage.removeItem(k));
+      alert("✅ Salida guardada y verificada correctamente.");
+      window.location.href = "./index.html";
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("❌ Error al guardar la salida.");
     }
-
-    // ✅ 4. Notificación general de salida
-    await notificarLobaZapata(salida);
-
-    // ✅ 5. Limpieza
-    ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"]
-      .forEach(k => localStorage.removeItem(k));
-
-    alert("✅ Salida guardada y verificada correctamente.");
-    window.location.href = "./index.html";
-
-  } catch (error) {
-    console.error("Error al guardar:", error);
-    alert("❌ Error al guardar la salida.");
   }
-}
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      await obtenerFolioDesdeFirebase();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await obtenerFolioDesdeFirebase();
+    document.getElementById('fecha').textContent = localStorage.getItem("resumenFecha") || "Sin fecha";
+    document.getElementById('entrega').textContent = localStorage.getItem("entrega") || "No asignado";
+    document.getElementById('recibe').textContent = localStorage.getItem("recibe") || "No asignado";
+    document.getElementById('destino').textContent = localStorage.getItem("destino") || "NO DEFINIDO";
+    document.getElementById('firmaEntrega').src = localStorage.getItem("firmaEntrega") || "";
+    document.getElementById('firmaRecibe').src = localStorage.getItem("firmaRecibe") || "";
 
-      document.getElementById('fecha').textContent   = localStorage.getItem("resumenFecha") || "Sin fecha";
-      document.getElementById('entrega').textContent = localStorage.getItem("entrega") || "No asignado";
-      document.getElementById('recibe').textContent  = localStorage.getItem("recibe") || "No asignado";
-      document.getElementById('destino').textContent = localStorage.getItem("destino") || "NO DEFINIDO";
-      document.getElementById('firmaEntrega').src    = localStorage.getItem("firmaEntrega") || "";
-      document.getElementById('firmaRecibe').src     = localStorage.getItem("firmaRecibe") || "";
-
-      const lista = JSON.parse(localStorage.getItem("carrito") || "[]");
-      const ul = document.getElementById("lista-articulos");
-      lista.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
-        ul.appendChild(li);
-      });
+    const lista = JSON.parse(localStorage.getItem("carrito") || "[]");
+    const ul = document.getElementById("lista-articulos");
+    lista.forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
+      ul.appendChild(li);
     });
+  });
   </script>
-
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
-
-
-
-
-
