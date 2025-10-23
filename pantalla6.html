@@ -148,33 +148,49 @@
       await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
       await db.collection("consecutivos").doc("salidas_zapata").set({ ultimo: firebase.firestore.FieldValue.increment(1) }, { merge: true });
 
-      for (const art of articulos) {
-        try {
-          const q = await db.collection("seguimiento_inventario")
-            .where("codigoBarra", "==", art.codigo)
-            .where("activo", "==", true)
-            .get();
+for (const art of articulos) {
+  try {
+    const q = await db.collection("seguimiento_inventario")
+      .where("codigoBarra", "==", art.codigo)
+      .where("activo", "==", true)
+      .get();
 
-          if (!q.empty) {
-            q.forEach(async (docu) => {
-              const data = docu.data();
-              const ref = db.collection("seguimiento_inventario").doc(docu.id);
+    if (!q.empty) {
+      for (const docu of q.docs) {
+        const data = docu.data();
+        const ref = db.collection("seguimiento_inventario").doc(docu.id);
 
-              const cantidadSalida = Math.abs(Number(String(art.cantidad).replace(/[^0-9.-]/g, ''))) || 0;
-              const inventarioActual = Math.abs(Number(data.inventario_fijado)) || 0;
-              const inventarioMinimo = Math.abs(Number(data.inventario_minimo)) || 0;
-              const nuevoInventario = inventarioActual >= cantidadSalida ? inventarioActual - cantidadSalida : 0;
+        const cantidadSalida = parseFloat(String(art.cantidad).replace(/[^0-9.]/g, "")) || 0;
+        const inventarioActual = parseFloat(data.inventario_fijado) || 0;
+        const inventarioMinimo = parseFloat(data.inventario_minimo) || 0;
+        const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
 
-              await ref.update({
-                inventario_fijado: nuevoInventario,
-                actualizadoEn: new Date().toISOString(),
-                ultima_salida: new Date().toISOString()
-              });
+        console.log(`🧮 Descontando ${cantidadSalida} de ${art.codigo} → nuevo inventario: ${nuevoInventario}`);
 
-              const esBajo = nuevoInventario <= inventarioMinimo;
-              let mensaje = esBajo ? `
-🔥🔥🔥 *ALERTA MÁXIMA DE INVENTARIO* 🔥🔥🔥
-💀 *¡STOCK CRÍTICO DETECTADO!* 💀
+        // ✅ 1. Actualizar Firestore
+        await ref.update({
+          inventario_fijado: nuevoInventario,
+          actualizadoEn: new Date().toISOString(),
+          ultima_salida: new Date().toISOString()
+        });
+
+        // ✅ 2. Registrar en historial
+        await ref.collection("historial").add({
+          tipo: "salida",
+          cantidad: cantidadSalida,
+          folio: folio,
+          fecha: new Date().toISOString(),
+          usuario: entrega || "sistema",
+          descripcion: `Salida automática registrada desde módulo Zapata`
+        });
+
+        // ✅ 3. Construir mensaje de Telegram
+        const esCritico = nuevoInventario <= inventarioMinimo;
+        let mensaje = "";
+
+        if (esCritico) {
+          mensaje = `
+🚨 *ALERTA CRÍTICA DE INVENTARIO*
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
 📉 Existencia actual: ${nuevoInventario}
@@ -182,25 +198,41 @@
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
 ⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
-🚒🔥💣🚨💥🧯🔥💥🚨💣🔥🚒`
-              : `
+🔥💣🚨💥🧯🔥💥🚨💣🔥`;
+        } else {
+          mensaje = `
 ✅ *Inventario actualizado correctamente*
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
+📦 Salida reciente: ${cantidadSalida}
 📉 Existencia actual: ${nuevoInventario}
 🔢 Mínimo definido: ${inventarioMinimo}
 🏠 Almacén: Zapata
-📅 ${new Date().toLocaleString("es-MX")}`;
+📅 ${new Date().toLocaleString("es-MX")}
+📗 _Movimiento registrado correctamente en Firestore_`;
+        }
 
-              await fetch(`https://api.telegram.org/bot8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8/sendMessage`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: "6617988297", text: mensaje, parse_mode: "Markdown" })
-              });
-            });
-          } else console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
-        } catch (err) { console.error("❌ Error en verificación de inventario:", err); }
+        // ✅ 4. Enviar notificación a Telegram
+        await fetch(`https://api.telegram.org/bot8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: "6617988297",
+            text: mensaje,
+            parse_mode: "Markdown"
+          })
+        });
+
+        console.log(`✅ Registro y alerta enviados para ${art.codigo}`);
       }
+    } else {
+      console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
+    }
+
+  } catch (err) {
+    console.error("❌ Error en verificación de inventario:", err);
+  }
+}
 
       await notificarLobaZapata(salida);
       ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"].forEach(k => localStorage.removeItem(k));
@@ -232,3 +264,4 @@
   </script>
 </body>
 </html>
+
