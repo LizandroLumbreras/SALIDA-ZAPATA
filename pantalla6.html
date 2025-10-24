@@ -195,8 +195,8 @@ for (const art of articulos) {
         // ✅ 3. Enviar mensajes a Alika
         const esCritico = nuevoInventario <= inventarioMinimo;
 
-        const mensajeAlika = `
-📦 *Actualización de inventario*
+const mensajeAlika = `
+<b>📦 Actualización de inventario</b>
 🆔 Código: ${data.codigoBarra}
 📦 Artículo: ${data.concepto || art.nombre}
 📉 Existencia actual: ${nuevoInventario}
@@ -205,15 +205,15 @@ for (const art of articulos) {
 📅 ${new Date().toLocaleString("es-MX")}
 `;
 
-        const mensajeCritico = `
-🚨 *ALERTA CRÍTICA DE INVENTARIO*
+const mensajeCritico = `
+🚨 <b>ALERTA CRÍTICA DE INVENTARIO</b>
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
 📉 Existencia actual: ${nuevoInventario}
 🔢 Mínimo definido: ${inventarioMinimo}
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
-⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
+⚠️ <b>¡REPOSICIÓN URGENTE NECESARIA!</b> ⚠️
 🔥💣🚨💥🧯🔥💥🚨💣🔥
 `;
 
@@ -287,6 +287,7 @@ for (const art of articulos) {
   </script>
 </body>
 </html>
+
 
 
 
