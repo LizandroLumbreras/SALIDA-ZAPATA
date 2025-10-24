@@ -158,6 +158,102 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
       for (const art of articulos) {
         console.log(`Procesando artículo ${art.codigo} (${art.nombre})`);
       }
+for (const art of articulos) {
+  try {
+    // 🔍 Buscar artículo en Firestore
+    const q = await db.collection("seguimiento_inventario")
+      .where("codigoBarra", "==", art.codigo)
+      .where("activo", "==", true)
+      .get();
+
+    if (!q.empty) {
+      for (const docu of q.docs) {
+        const data = docu.data();
+        const ref = db.collection("seguimiento_inventario").doc(docu.id);
+
+        const cantidadSalida = parseFloat(String(art.cantidad).replace(/[^0-9.]/g, "")) || 0;
+        const inventarioActual = parseFloat(data.inventario_fijado) || 0;
+        const inventarioMinimo = parseFloat(data.inventario_minimo) || 0;
+        const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
+
+        console.log(`🧮 Descontando ${cantidadSalida} de ${art.codigo} → nuevo inventario: ${nuevoInventario}`);
+
+        // ✅ 1. Actualizar Firestore
+        await ref.update({
+          inventario_fijado: nuevoInventario,
+          actualizadoEn: new Date().toISOString(),
+          ultima_salida: new Date().toISOString()
+        });
+
+        // ✅ 2. Registrar en historial
+        await ref.collection("historial").add({
+          tipo: "salida",
+          cantidad: cantidadSalida,
+          folio: folio,
+          fecha: new Date().toISOString(),
+          usuario: entrega || "sistema",
+          descripcion: `Salida automática registrada desde módulo Zapata`
+        });
+
+        // ✅ 3. Enviar mensajes a Alika
+        const esCritico = nuevoInventario <= inventarioMinimo;
+
+        const mensajeAlika = `
+📦 *Actualización de inventario*
+🆔 Código: ${data.codigoBarra}
+📦 Artículo: ${data.concepto || art.nombre}
+📉 Existencia actual: ${nuevoInventario}
+🔢 Mínimo definido: ${inventarioMinimo}
+🏠 Almacén: Zapata
+📅 ${new Date().toLocaleString("es-MX")}
+`;
+
+        const mensajeCritico = `
+🚨 *ALERTA CRÍTICA DE INVENTARIO*
+📦 ${data.concepto || art.nombre}
+🆔 Código: ${data.codigoBarra}
+📉 Existencia actual: ${nuevoInventario}
+🔢 Mínimo definido: ${inventarioMinimo}
+🏠 Almacén: Zapata
+📅 ${new Date().toLocaleString("es-MX")}
+⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
+🔥💣🚨💥🧯🔥💥🚨💣🔥
+`;
+
+        // 1️⃣ Siempre manda actualización a Alika
+        await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: CHAT_ALIKA,
+            text: mensajeAlika,
+            parse_mode: "Markdown"
+          })
+        });
+        console.log("📊 Enviado a AlikaInvCritic_bot (inventario actualizado)");
+
+        // 2️⃣ Si está crítico, manda alerta
+        if (esCritico) {
+          await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: CHAT_ALIKA,
+              text: mensajeCritico,
+              parse_mode: "Markdown"
+            })
+          });
+          console.log("🚨 Enviado a AlikaInvCritic_bot (alerta crítica)");
+        }
+      }
+    } else {
+      console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
+    }
+
+  } catch (err) {
+    console.error("❌ Error en verificación de inventario:", err);
+  }
+}
 
       // ✅ Notificar y limpiar datos
       await notificarLobaZapata(salida);
@@ -192,5 +288,6 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
   </script>
 </body>
 </html>
+
 
 
