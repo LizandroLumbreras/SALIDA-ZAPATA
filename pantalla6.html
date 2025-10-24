@@ -154,17 +154,23 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
       await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
       await db.collection("consecutivos").doc("salidas_zapata").set({ ultimo: firebase.firestore.FieldValue.increment(1) }, { merge: true });
 
-for (const art of articulos) {
+      // 🔹 Si quieres recorrer artículos, ciérralo correctamente:
+      for (const art of articulos) {
+        console.log(`Procesando artículo ${art.codigo} (${art.nombre})`);
+      }
 
+      // ✅ Notificar y limpiar datos
       await notificarLobaZapata(salida);
       ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"].forEach(k => localStorage.removeItem(k));
       alert("✅ Salida guardada y verificada correctamente.");
       window.location.href = "./index.html";
+      
     } catch (error) {
       console.error("Error al guardar:", error);
       alert("❌ Error al guardar la salida.");
     }
   }
+
 
   document.addEventListener("DOMContentLoaded", async () => {
     await obtenerFolioDesdeFirebase();
@@ -186,4 +192,5 @@ for (const art of articulos) {
   </script>
 </body>
 </html>
+
 
