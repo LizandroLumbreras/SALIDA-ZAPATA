@@ -154,10 +154,7 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
       await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
       await db.collection("consecutivos").doc("salidas_zapata").set({ ultimo: firebase.firestore.FieldValue.increment(1) }, { merge: true });
 
-      // 🔹 Si quieres recorrer artículos, ciérralo correctamente:
-      for (const art of articulos) {
-        console.log(`Procesando artículo ${art.codigo} (${art.nombre})`);
-      }
+
 for (const art of articulos) {
   try {
     // 🔍 Buscar artículo en Firestore
@@ -227,7 +224,8 @@ for (const art of articulos) {
           body: JSON.stringify({
             chat_id: CHAT_ALIKA,
             text: mensajeAlika,
-            parse_mode: "Markdown"
+            parse_mode: "HTML"
+
           })
         });
         console.log("📊 Enviado a AlikaInvCritic_bot (inventario actualizado)");
@@ -240,7 +238,8 @@ for (const art of articulos) {
             body: JSON.stringify({
               chat_id: CHAT_ALIKA,
               text: mensajeCritico,
-              parse_mode: "Markdown"
+              parse_mode: "HTML"
+
             })
           });
           console.log("🚨 Enviado a AlikaInvCritic_bot (alerta crítica)");
@@ -288,6 +287,7 @@ for (const art of articulos) {
   </script>
 </body>
 </html>
+
 
 
 
