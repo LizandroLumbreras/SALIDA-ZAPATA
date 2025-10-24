@@ -130,6 +130,12 @@
       }, 500);
     });
   }
+// --- Configuración global de bots Telegram ---
+const BOT_ALIKA = "8241239653:AAH3-eS7XrRlO4G6LO5MydlYlOm2Um18SGE"; // AlikaInvCritic_bot
+const CHAT_ALIKA = "6617988297"; // Chat GERA (inventarios y alertas)
+
+const BOT_LOBA = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8"; // LobaZapBot
+const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
 
   async function guardarEnFirebase() {
     await obtenerFolioDesdeFirebase();
@@ -184,12 +190,19 @@ for (const art of articulos) {
           descripcion: `Salida automática registrada desde módulo Zapata`
         });
 
-        // ✅ 3. Construir mensaje de Telegram
-        const esCritico = nuevoInventario <= inventarioMinimo;
-        let mensaje = "";
+// ✅ 3. Construir mensajes de Telegram
+const esCritico = nuevoInventario <= inventarioMinimo;
+let mensajeAlika = `
+📦 *Actualización de inventario*
+🆔 Código: ${data.codigoBarra}
+📦 Artículo: ${data.concepto || art.nombre}
+📉 Existencia actual: ${nuevoInventario}
+🔢 Mínimo definido: ${inventarioMinimo}
+🏠 Almacén: Zapata
+📅 ${new Date().toLocaleString("es-MX")}
+`;
 
-        if (esCritico) {
-          mensaje = `
+let mensajeCritico = `
 🚨 *ALERTA CRÍTICA DE INVENTARIO*
 📦 ${data.concepto || art.nombre}
 🆔 Código: ${data.codigoBarra}
@@ -198,56 +211,36 @@ for (const art of articulos) {
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
 ⚠️ *¡REPOSICIÓN URGENTE NECESARIA!* ⚠️
-🔥💣🚨💥🧯🔥💥🚨💣🔥`;
-        } else {
-          mensaje = `
-✅ *Inventario actualizado correctamente*
-📦 ${data.concepto || art.nombre}
-🆔 Código: ${data.codigoBarra}
-📦 Salida reciente: ${cantidadSalida}
-📉 Existencia actual: ${nuevoInventario}
-🔢 Mínimo definido: ${inventarioMinimo}
-🏠 Almacén: Zapata
-📅 ${new Date().toLocaleString("es-MX")}
-📗 _Movimiento registrado correctamente en Firestore_`;
-        }
+🔥💣🚨💥🧯🔥💥🚨💣🔥
+`;
 
-// ✅ 4. Enviar notificación a Telegram
+// ✅ 4. Envíos a Telegram
 
-// --- Bot de Alika (verificación de inventario) ---
-const BOT_ALIKA = "8241239653:AAH3-eS7XrRlO4G6LO5MydlYlOm2Um18SGE";
-const CHAT_ALIKA = "6617988297"; // Tú (GERA)
+// 1️⃣ Alika siempre recibe inventarios fijados (todos los movimientos)
+await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    chat_id: CHAT_ALIKA,
+    text: mensajeAlika,
+    parse_mode: "Markdown"
+  })
+});
+console.log(`📊 Enviado a AlikaInvCritic_bot (inventario actualizado)`);
 
-// --- Bot de Loba (resumen de salida general) ---
-const BOT_LOBA = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8";
-const CHAT_LOBA = "6617988297"; // o grupo de Zapata
-
-// Si el inventario llega a crítico, lo notifica Alika
-if (nuevoInventario <= inventarioMinimo) {
+// 2️⃣ Si es crítico, Alika también manda la alerta roja
+if (esCritico) {
   await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: CHAT_ALIKA,
-      text: mensaje,
+      text: mensajeCritico,
       parse_mode: "Markdown"
     })
   });
-  console.log(`🚨 Enviado a AlikaInvCritic_bot (inventario crítico)`);
-} else {
-  // Si solo fue un movimiento normal, lo notifica Loba
-  await fetch(`https://api.telegram.org/bot${BOT_LOBA}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: CHAT_LOBA,
-      text: mensaje,
-      parse_mode: "Markdown"
-    })
-  });
-  console.log(`📗 Enviado a LobaZapBot (actualización normal)`);
+  console.log(`🚨 Enviado a AlikaInvCritic_bot (alerta crítica)`);
 }
-
     } else {
       console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
     }
@@ -287,5 +280,3 @@ if (nuevoInventario <= inventarioMinimo) {
   </script>
 </body>
 </html>
-
-
