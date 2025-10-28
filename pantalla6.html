@@ -157,49 +157,64 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
 
 for (const art of articulos) {
   try {
-    // 🔍 Buscar artículo en Firestore
+    const codigo = String(art.codigo || "").trim();
     const q = await db.collection("seguimiento_inventario")
-      .where("codigoBarra", "==", art.codigo)
+      .where("codigoBarra", "==", codigo)
       .where("activo", "==", true)
       .get();
 
-    if (!q.empty) {
-      for (const docu of q.docs) {
-        const data = docu.data();
-        const ref = db.collection("seguimiento_inventario").doc(docu.id);
+    if (q.empty) {
+      console.warn(`⚠️ Código ${codigo} no encontrado en seguimiento_inventario`);
+      continue;
+    }
 
-        const cantidadSalida = parseFloat(String(art.cantidad).replace(/[^0-9.]/g, "")) || 0;
-        const inventarioActual = parseFloat(data.inventario_fijado) || 0;
-        const inventarioMinimo = parseFloat(data.inventario_minimo) || 0;
-        const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
+    for (const docu of q.docs) {
+      const data = docu.data();
+      const ref = db.collection("seguimiento_inventario").doc(docu.id);
 
-        console.log(`🧮 Descontando ${cantidadSalida} de ${art.codigo} → nuevo inventario: ${nuevoInventario}`);
+      // 🧮 Validaciones seguras
+      let inventarioActual = parseFloat(data.inventario_fijado ?? 0);
+      if (isNaN(inventarioActual)) inventarioActual = 0;
 
-        // ✅ 1. Actualizar Firestore
-        await ref.update({
-          inventario_fijado: nuevoInventario,
-          actualizadoEn: new Date().toISOString(),
-          ultima_salida: new Date().toISOString()
-        });
+      const cantidadSalida = parseFloat(String(art.cantidad).replace(/[^0-9.]/g, "")) || 0;
+      const inventarioMinimo = parseFloat(data.inventario_minimo ?? 0);
+      const nuevoInventario = Math.max(0, inventarioActual - cantidadSalida);
 
-        // ✅ 2. Registrar en historial
-        await ref.collection("historial").add({
-          tipo: "salida",
-          cantidad: cantidadSalida,
-          folio: folio,
-          fecha: new Date().toISOString(),
-          usuario: entrega || "sistema",
-          descripcion: `Salida automática registrada desde módulo Zapata`
-        });
+      console.log(`🧮 Descontando ${cantidadSalida} de ${codigo} → ${inventarioActual} → ${nuevoInventario}`);
 
-        // ✅ 3. Enviar mensajes a Alika
-        const esCritico = nuevoInventario <= inventarioMinimo;
+      // ✅ 1. Actualizar documento principal
+      await ref.update({
+        inventario_fijado: nuevoInventario,
+        actualizadoEn: new Date().toISOString(),
+        ultima_salida: new Date().toISOString()
+      });
+
+      // ✅ 2. Registrar historial
+      await ref.collection("historial").add({
+        tipo: "salida",
+        cantidad: cantidadSalida,
+        folio: folio,
+        fecha: new Date().toISOString(),
+        usuario: entrega || "sistema",
+        inventario_resultante: nuevoInventario,
+        descripcion: "Salida automática registrada desde módulo Zapata"
+      });
+
+      // ✅ 3. Telegram ALIKA
+// 🧮 Variables de cálculo extra
+const inventarioAnterior = inventarioActual;
+const cantidad = cantidadSalida;
+const inventarioFinal = nuevoInventario;
 
 const mensajeAlika = `
 <b>📦 Actualización de inventario</b>
-🆔 Código: ${data.codigoBarra}
-📦 Artículo: ${data.concepto || art.nombre}
-📉 Existencia actual: ${nuevoInventario}
+🆔 Código: <b>${data.codigoBarra}</b>
+📦 ${data.concepto || art.nombre}
+
+📤 <b>Salida:</b> ${cantidad} unidades
+📈 <b>Inventario anterior:</b> ${inventarioAnterior}
+📉 <b>Inventario actual:</b> ${inventarioFinal}
+
 🔢 Mínimo definido: ${inventarioMinimo}
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
@@ -208,49 +223,31 @@ const mensajeAlika = `
 const mensajeCritico = `
 🚨 <b>ALERTA CRÍTICA DE INVENTARIO</b>
 📦 ${data.concepto || art.nombre}
-🆔 Código: ${data.codigoBarra}
-📉 Existencia actual: ${nuevoInventario}
-🔢 Mínimo definido: ${inventarioMinimo}
+🆔 Código: <b>${data.codigoBarra}</b>
+
+📤 <b>Salida:</b> ${cantidad} unidades
+📈 <b>Inventario anterior:</b> ${inventarioAnterior}
+📉 <b>Inventario actual:</b> ${inventarioFinal} (⚠️ Bajo el mínimo ${inventarioMinimo})
+
 🏠 Almacén: Zapata
 📅 ${new Date().toLocaleString("es-MX")}
-⚠️ <b>¡REPOSICIÓN URGENTE NECESARIA!</b> ⚠️
-🔥💣🚨💥🧯🔥💥🚨💣🔥
+💣🔥 <b>¡REPOSICIÓN URGENTE NECESARIA!</b> 🔥💣
 `;
 
-        // 1️⃣ Siempre manda actualización a Alika
-        await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: CHAT_ALIKA,
-            text: mensajeAlika,
-            parse_mode: "HTML"
-          })
-        });
-        console.log("📊 Enviado a AlikaInvCritic_bot (inventario actualizado)");
+      await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ALIKA, text: mensaje, parse_mode: "HTML" })
+      });
 
-        // 2️⃣ Si está crítico, manda alerta
-        if (esCritico) {
-          await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: CHAT_ALIKA,
-              text: mensajeCritico,
-              parse_mode: "HTML"
-            })
-          });
-          console.log("🚨 Enviado a AlikaInvCritic_bot (alerta crítica)");
-        }
-      }
-    } else {
-      console.log(`ℹ️ Código ${art.codigo} no está en seguimiento_inventario.`);
+      console.log(esCritico ? "🚨 Enviado alerta crítica" : "📊 Actualización normal enviada");
     }
 
   } catch (err) {
     console.error("❌ Error en verificación de inventario:", err);
   }
 }
+
 
       // ✅ Notificar y limpiar datos
       await notificarLobaZapata(salida);
@@ -285,3 +282,4 @@ const mensajeCritico = `
   </script>
 </body>
 </html>
+
