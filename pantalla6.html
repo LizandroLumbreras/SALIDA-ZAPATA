@@ -200,13 +200,13 @@ for (const art of articulos) {
         descripcion: "Salida automática registrada desde módulo Zapata"
       });
 
-      // ✅ 3. Telegram ALIKA
-// 🧮 Variables de cálculo extra
+// ✅ 3. Telegram ALIKA
 const inventarioAnterior = inventarioActual;
 const cantidad = cantidadSalida;
 const inventarioFinal = nuevoInventario;
+const esCritico = inventarioFinal <= inventarioMinimo;
 
-const mensajeAlika = `
+const mensajeNormal = `
 <b>📦 Actualización de inventario</b>
 🆔 Código: <b>${data.codigoBarra}</b>
 📦 ${data.concepto || art.nombre}
@@ -234,13 +234,19 @@ const mensajeCritico = `
 💣🔥 <b>¡REPOSICIÓN URGENTE NECESARIA!</b> 🔥💣
 `;
 
-      await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ALIKA, text: mensaje, parse_mode: "HTML" })
-      });
+// 🔹 Enviar mensaje de actualización siempre
+await fetch(`https://api.telegram.org/bot${BOT_ALIKA}/sendMessage`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    chat_id: CHAT_ALIKA,
+    text: esCritico ? mensajeCritico : mensajeNormal,
+    parse_mode: "HTML"
+  })
+});
 
-      console.log(esCritico ? "🚨 Enviado alerta crítica" : "📊 Actualización normal enviada");
+console.log(esCritico ? "🚨 Enviado alerta crítica" : "📊 Actualización normal enviada");
+
     }
 
   } catch (err) {
@@ -282,4 +288,5 @@ const mensajeCritico = `
   </script>
 </body>
 </html>
+
 
