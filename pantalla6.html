@@ -53,9 +53,10 @@
         <img id="firmaRecibe" src="" alt="Firma recibe">
       </div>
     </div>
+    <p id="folioCinchoMostrar" style="text-align:center;font-weight:bold;margin-top:20px;"></p>
 
     <button class="no-print" onclick="imprimirYDescargar()" style="background-color:#28a745;">🖨️ Imprimir y Descargar</button>
-    <button class="no-print" onclick="guardarEnFirebase()" style="background-color:#007bff;">💾 Guardar salida</button>
+    <button class="no-print" onclick="abrirModalCincho()" style="background-color:#007bff;">💾 Guardar salida</button>
   </div>
 
   <!-- Firebase SDK -->
@@ -137,6 +138,26 @@ const CHAT_ALIKA = "6617988297"; // Chat GERA (inventarios y alertas)
 const BOT_LOBA = "8495270080:AAFBJ8Vxi6ZhqP6ghtJqMal9RZFz3YJBpo8"; // LobaZapBot
 const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
 
+    // --- Modal Folio Cincho ---
+function abrirModalCincho() {
+  document.getElementById("modalCincho").style.display = "flex";
+}
+function cerrarModalCincho() {
+  document.getElementById("modalCincho").style.display = "none";
+}
+function confirmarCincho() {
+  const folioCincho = document.getElementById("folioCinchoInput").value.trim();
+  const noCamion = document.getElementById("noCamionCheck").checked;
+
+  if (!noCamion && !folioCincho) {
+    alert("⚠️ Debes ingresar el folio de cincho o marcar 'No es camión'.");
+    return;
+  }
+
+  localStorage.setItem("folioCincho", noCamion ? "" : folioCincho);
+  cerrarModalCincho();
+  guardarEnFirebase(); // continúa con el flujo normal
+}
   async function guardarEnFirebase() {
     await obtenerFolioDesdeFirebase();
 
@@ -147,8 +168,14 @@ const CHAT_LOBA = "6617988297"; // Chat o grupo de salidas
     const firmaEntrega = localStorage.getItem("firmaEntrega") || "";
     const firmaRecibe = localStorage.getItem("firmaRecibe") || "";
     const articulos = JSON.parse(localStorage.getItem("carrito") || "[]");
+    const folioCincho = localStorage.getItem("folioCincho") || "";
 
-    const salida = { folio, fecha, entrega, recibe, destino, firmaEntrega, firmaRecibe, articulos, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+   const salida = { 
+  folio, fecha, entrega, recibe, destino, 
+  folioCincho, // 👈 nuevo campo
+  firmaEntrega, firmaRecibe, articulos, 
+  timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+};
 
     try {
       await db.collection("almacenes").doc("almacen_zapata").collection("salidas").add(salida);
@@ -258,7 +285,8 @@ console.log(esCritico ? "🚨 Enviado alerta crítica" : "📊 Actualización no
 
       // ✅ Notificar y limpiar datos
       await notificarLobaZapata(salida);
-      ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino"].forEach(k => localStorage.removeItem(k));
+      ["carrito","firmaEntrega","firmaRecibe","fecha","resumenFecha","entrega","recibe","destino","folioCincho"]
+  .forEach(k => localStorage.removeItem(k));
       alert("✅ Salida guardada y verificada correctamente.");
       window.location.href = "./index.html";
       
@@ -280,15 +308,39 @@ console.log(esCritico ? "🚨 Enviado alerta crítica" : "📊 Actualización no
 
     const lista = JSON.parse(localStorage.getItem("carrito") || "[]");
     const ul = document.getElementById("lista-articulos");
-    lista.forEach(p => {
-      const li = document.createElement("li");
-      li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
-      ul.appendChild(li);
-    });
+ lista.forEach(p => {
+  const li = document.createElement("li");
+  li.textContent = `• ${p.cantidad} x ${p.nombre} (Código: ${p.codigo})`;
+  ul.appendChild(li);
+});
+
+// ✅ Mostrar folio cincho una sola vez
+const folioCincho = localStorage.getItem("folioCincho") || "";
+if (folioCincho) {
+  document.getElementById("folioCinchoMostrar").textContent = `🚚 Folio de Cincho: ${folioCincho}`;
+}
   });
   </script>
+  <!-- 🔹 Modal Folio de Cincho -->
+<div id="modalCincho" class="no-print" style="
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;
+">
+  <div style="
+    background:white; color:black; padding:20px; border-radius:10px;
+    width:90%; max-width:350px; text-align:center; box-shadow:0 6px 18px rgba(0,0,0,.3);
+  ">
+    <h3>🚚 Folio de Cincho</h3>
+    <input type="text" id="folioCinchoInput" placeholder="Ej. CIN-00245"
+      style="padding:8px;width:80%;border-radius:6px;border:1px solid #ccc;margin-bottom:10px;"><br>
+    <label><input type="checkbox" id="noCamionCheck"> No es camión</label><br><br>
+    <button onclick="confirmarCincho()" style="background:#007bff;color:white;padding:8px 16px;border:none;border-radius:6px;">Continuar</button>
+    <button onclick="cerrarModalCincho()" style="background:#999;color:white;padding:8px 16px;border:none;border-radius:6px;margin-left:10px;">Cancelar</button>
+  </div>
+</div>
 </body>
 </html>
+
 
 
 
